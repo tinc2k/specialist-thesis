@@ -1,0 +1,38 @@
+﻿@model Wayfarer.Mvc.Models.LoginModel
+
+@{
+    ViewBag.Title = "Login";
+}
+
+
+    <div class="row">
+        <div class="col-md-4 col-md-offset-4">
+            <h1>@ViewBag.Title</h1>
+            <br /><br />
+            @using (Html.BeginForm(new { ReturnUrl = ViewBag.ReturnUrl })) {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true)
+
+                @Html.ValidationMessageFor(m => m.UserName)
+                @Html.TextBoxFor(m => m.UserName, new {placeholder="Username", @class="form-control"})
+                <br />
+                @Html.ValidationMessageFor(m => m.Password)
+                @Html.PasswordFor(m => m.Password, new {placeholder="Password", @class="form-control"})
+                <label class="hidden">
+                    @Html.CheckBoxFor(m => m.RememberMe, new { @checked = "checked" }) Remember me?
+                </label>
+                <br />
+                <input type="submit" value="Log in" class="form-control btn btn-primary" />
+                
+                <br /><br />
+                <button type="button"class="form-control btn btn-info" onclick="location.href='@Url.Action("Register", "Account")';">
+                    Register
+                </button>
+
+                <br /><br />
+
+            }
+            @Html.Action("ExternalLoginsList", new { ReturnUrl = ViewBag.ReturnUrl })
+        </div>
+    </div>
+

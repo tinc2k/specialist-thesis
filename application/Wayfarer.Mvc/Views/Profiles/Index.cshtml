@@ -1,0 +1,377 @@
+﻿@{
+    ViewBag.Title = @ViewBag.Profile.UserName;
+}
+
+<div class="profile_heading" style="margin: 0 0 0 20px;">
+    <h1>@ViewBag.Profile.UserName
+
+    @if (User.Identity.Name == ViewBag.Profile.UserName)
+    {
+        <a href="#" class="btn btn-inverse btn-small disabled"><i class="icon-white icon-home"></i> This is You</a>
+    }
+    else if (ViewBag.IsProfileFriend)
+    {      
+        <a href="#" class="btn btn-danger btn-small remove-friend"><i class="icon-white icon-remove"></i> Remove Friend</a>
+        <a href="#" class="btn btn-success btn-small add-friend hidden"><i class="icon-white icon-heart"></i> Add Friend</a>
+    }
+    else
+    {
+        <a href="#" class="btn btn-danger btn-small remove-friend hidden"><i class="icon-white icon-remove"></i> Remove Friend</a>
+        <a href="#" class="btn btn-success btn-small add-friend"><i class="icon-white icon-heart"></i> Add Friend</a>
+    }
+        </h1>
+</div>
+
+
+
+<!-- Stack the columns on mobile by making one full-width and the other half-width -->
+<div class="row">
+    <div class="col-6 col-lg-2">
+        @* [tc] user's own profile, which means he is allowed to edit it *@
+        @if (User.Identity.Name == ViewBag.Profile.UserName)
+        {
+            <div class="profile-left-column">        
+            <form>
+                <article>
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-envelope"></span>
+                        </span>
+                        <input type="text" name="email" class="form-control" value="@ViewBag.Profile.Email" placeholder="E-mail"/>
+                    </div>
+                    <br />
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-phone"></span>
+                        </span>
+                        <input type="text" name="phone" class="form-control" value="@ViewBag.Profile.Phone" placeholder="Phone" />
+                    </div>
+                    <br />
+                </article>
+                <section class="regions">
+                    @foreach (var region in ViewBag.Regions)
+                    {
+                        <div class="bs-callout bs-callout-info">
+                            <h5>
+                                <!--<i class="icon-minus-sign"></i>-->
+                                <span class="glyphicon glyphicon-minus-sign"></span>
+                                <strong>@region.Name</strong> <em>(@region.Audience.ToString().ToLower())</em>
+                                <input type="hidden" name="region_name" value="@region.Name"/>
+                            </h5>
+                            <p><textarea name="region_value" class="form-control">@region.Value</textarea></p>
+                            <label>
+                                @if (region.Audience == Audience.Friends)
+                                {
+                                    <input type="checkbox" name="region_limited_junk" checked="checked"> 
+                                }
+                                else
+                                {
+                                    <input type="checkbox" name="region_limited_junk">
+                                }
+                                Limited?
+                            </label>
+                        </div>
+                    }
+                    <article class="hidden">
+                        <input type="text" class="form-control" name="region_name" placeholder="New Region Name" />
+                        <textarea name="region_value" class="form-control" placeholder="New Region Text"></textarea>
+                        <br />
+                        <label>
+                            <input type="checkbox" name="region_limited_junk">
+                            Limited?
+                        </label>
+                    </article> 
+                </section>
+                <h5><span class="glyphicon glyphicon-plus-sign"></span> New Region</h5>
+                <br />
+                <button type="submit" class="btn btn-primary">Save</button>
+            </form>
+        </div>
+        }
+        else /*not user's own profile*/
+        {
+        <div class="profile-left-column">
+            @if (ViewBag.Profile.Email != String.Empty)
+            {
+                <p>
+                    <span class="glyphicon glyphicon-envelope"></span>
+                    <a href="mailto:@ViewBag.Profile.Email">@ViewBag.Profile.Email</a>
+                </p>
+            }
+            @if (ViewBag.Profile.Phone != String.Empty)
+            {
+                <p>
+                    <span class="glyphicon glyphicon-phone"></span>
+                    @ViewBag.Profile.Phone
+                </p>
+            }
+            <section class="regions">
+            @foreach (var region in ViewBag.Regions)
+            {
+                <div class="bs-callout bs-callout-info">
+                  <h4>@region.Name</h4>
+                  <p>@region.Value</p>
+                </div>
+            }
+            </section>
+            <div class="bs-callout bs-callout-info">
+                @if (ViewBag.Friends.Count > 0)
+                {
+                    <h4>Friends</h4>
+                    <ul class="nav nav-pills nav-stacked">
+                        @foreach (var friend in ViewBag.Friends)
+                        {
+                            <li><a href="http://@HttpContext.Current.Request.Url.Authority/profiles/@friend.UserName">@friend.UserName</a></li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <h4>No friends :(</h4>
+                }
+            </div>
+        </div>
+        }
+    </div>
+
+    <div class="col-12 col-lg-10" style="margin: 20px 0 0 0;">
+        <div id="status_container"></div>
+    </div>
+</div>
+
+
+@section scripts
+{
+    <script type="text/javascript">
+
+        var wayfarerHub = null;
+        var misterUser = "@ViewBag.Profile.UserName";
+
+        /* ADD/REMOVE FRIEND */
+        $('a.remove-friend').click(function () {
+            $('a.remove-friend').addClass('hidden');
+            $('a.add-friend').removeClass('hidden');
+            $.ajax(
+            {
+                url: "@Url.Action("Unfriend", "Home")",
+                type: "GET",
+                data: { username: "@ViewBag.Profile.UserName" },
+                success: function (data) {
+                        if (data == 'true') {
+                            toastr.info('@ViewBag.Profile.UserName is not a friend anymore :(');
+                        } else {
+                            toastr.error('AJAX failed:' + data);
+                        }
+                    },
+                    error: function (data) {
+                        toastr.error('AJAX failed:' + data);
+                    }
+            });
+        });
+        $('a.add-friend').click(function () {
+            $('a.remove-friend').removeClass('hidden');
+            $('a.add-friend').addClass('hidden');
+            $.ajax(
+            {
+                url: "@Url.Action("Friend", "Home")",
+                type: "GET",
+                data: { username: "@ViewBag.Profile.UserName" },
+                success: function (data) {
+                    if (data == 'true') {
+                        toastr.info('@ViewBag.Profile.UserName is your friend now :)');
+                    } else {
+                        toastr.error('AJAX failed:' + data);
+                    }
+                },
+                error: function (data) {
+                    toastr.error('AJAX failed: ' + data);
+                }
+            });
+        });
+
+        /* PROFILE */
+
+        /*Remove Profile Region*/
+        $('.glyphicon-minus-sign').click(function () {
+            var parent = $(this).parent().parent();
+            parent.slideUp(400, function () { parent.remove(); });
+        });
+
+        /*Add Profile Region*/
+        $('.glyphicon-plus-sign').click(function () {
+            var regions = $('.regions');
+            var new_visible_region = regions.find('.hidden');
+            var new_invisible_region = new_visible_region.clone();
+            new_visible_region.removeClass('hidden');
+            new_visible_region.hide();
+            new_visible_region.slideDown();
+            regions.append(new_invisible_region);
+        });
+
+        /*Save Profile Changes*/
+        var form_objects;
+        $('form').submit(function () {
+            form_objects = $('form').serializeArray();
+            $.each( $("[name='region_limited_junk']"), function (key, value) {
+                form_objects.push({
+                    'name': "region_limited",
+                    'value': ($(value).is(':checked')) ? 'true' : 'false'
+                });
+            });
+            $.ajax({
+                url: "@Url.Action("EditProfile", "Home")",
+                data: form_objects,
+                method: "POST"
+            }).done(function (data) {
+                //console.log(data);
+                toastr.info("Saved changes.")
+            });
+            return false;
+        });
+
+
+        /* FEED */
+
+        var statuses = new Array();				/*[tc] stores all statuses received*/
+        var status_container = $('#status_container');
+        var status_template; 					/*[tc] handlebars template*/
+        var pixels_before_load = 200;			/*[tc] global var - how many pixels before scrolling the end of the page will we load new content*/
+
+        /*Fills the top of the statuses DOM from the statuses global var*/
+        function forceWriteTop() {
+            console.log('forceWriteTop() called.');
+            var latest_id = getLatestStatusId();
+            var new_statuses = new Array();
+            for (var i = 0; i < statuses.length; i++) {
+                if (latest_id == undefined || statuses[i].StatusId > latest_id) { /*newer status, or no statuses already*/
+                    new_statuses.push(statuses[i]);
+                }
+            }
+            new_statuses.reverse(); /*change order for prepending into DOM*/
+            for (var i = 0; i < new_statuses.length; i++)
+            {
+                $(status_container).prepend(status_template({ status: new_statuses[i] }));
+                $(status_container).children().first().hide();
+                $(status_container).children().first().slideDown();
+            }
+        }
+
+        /*Fills the bottom of the statuses DOm from the statuses global var*/
+        function forceWriteBottom() {
+            console.log('forceWriteBottom() called.');
+            var oldest_id = getOldestStatusId();
+            for (var i = 0; i < statuses.length; i++) {
+                if (statuses[i].StatusId < oldest_id) {
+                    $(status_container).append(status_template({ status: statuses[i] }));
+                    $(status_container).children().last().hide();
+                    $(status_container).children().last().slideDown();
+                }
+            }
+        }
+
+        /*Fired when a user scrolls, or when new content arrived. Checks where the user has scrolled, and loads new content into DOM, or requests new content*/
+        function OnScrollOrUpdate() {
+            /*if user can see the top of the div, fill with new content (if any)*/
+            if ($(window).scrollTop() < $(status_container).offset().top) {
+                forceWriteTop();
+            }
+            /*if user is close to bottom, fire an AJAX call and fill bottom DOM*/
+            else if ($(window).scrollTop() + $(window).height() >= $(status_container).offset().top + $(status_container).height()) {
+                var oldest_id = getOldestStatusId();
+                getUserFeed(null, oldest_id, null, forceWriteBottom);
+            }
+        }
+
+        /*On Scroll Event*/
+        $(window).scroll(function () {
+            //console.log('Window scroll event fired.')
+            OnScrollOrUpdate();
+        });
+
+        /*On Document Load Event*/
+        $(function() {
+            /*template compilation*/
+            status_template = Handlebars.compile($("#status-template").html());
+            /*initial status load*/
+            getUserFeed(null, null, null, forceWriteTop);
+
+            wayfarerHub = $.connection.wayfarerHub;
+
+            /*SignalR method to be triggered from server when new content is available*/
+            wayfarerHub.client.refreshFeed = function () {
+                /*toastr.success("REFRESH FEED INITIATED");*/
+                /*determine latest id, to only get newer stuff in my call*/
+                var latest_status = getLatestStatusId();
+                /*something changed the feed, call WebAPI to refresh*/
+                getUserFeed(null, null, latest_status, OnScrollOrUpdate)
+            }
+
+            $.connection.hub.error(function () {
+                toastr.error('An error occured while connecting to Wayfarer SignalR hub.')
+            });
+
+            $.connection.hub.start().done(function () {
+                //toastr.success('Connected to Wayfarer SignalR hub!')
+                /*call a SignalR server-side to subscribe to new events of this user*/
+                wayfarerHub.server.subscribeToUserEvents("@ViewBag.Profile.UserName").done(function () {
+                    //toastr.success("Subscribed to this user's events. Yipee.");
+                }).fail(function (error) {
+                    toastr.error('SignalR failed: ' + error);
+                });
+                window.setInterval(geolocateMe, 30000);
+            });
+
+        });
+
+        /*Gets the user statuses via a WebAPI REST service*/
+        function getUserFeed(skip, beforeId, afterId, callback) {
+            console.log('getUserFeed() called.');
+            $.ajax(
+            {
+                url: "/api/feed",
+                contentType: "text/json",
+                type: "GET",
+                data: { username: '@ViewBag.Profile.UserName', skip: skip, beforeId: beforeId, afterId: afterId },
+                success: function (data) {
+                    $.each(data, function (index) {
+                        console.log(data[index].Content);
+                        statuses.push({
+                            StatusId : data[index].StatusId,
+                            AuthorId : data[index].AuthorId,
+                            AuthorName : data[index].AuthorName,
+                            Content : data[index].Content,
+                            Audience : data[index].Audience,
+                            TimePosted : data[index].TimePosted,
+                            TimeEdited : data[index].TimeEdited == null ? false : data[index].TimeEdited
+                        });
+                    });
+                    callback();
+                },
+                error: function (data) {
+                    console.log('An error occured while fetching your feed :( ' + data);
+                }
+            });
+        }
+
+        /*Helper Functions*/
+        function getLatestStatusId() {return status_container.children().first().find("input[name='statusId']").val();}
+        function getOldestStatusId() {return status_container.children().last().find("input[name='statusId']").val();}
+
+    </script>
+}
+
+<script id="status-template" type="text/x-handlebars-template">
+	<blockquote class="status">
+        <input type="hidden" name="statusId" value="{{status.StatusId}}" />
+        <input type="hidden" name="authorId" value="{{status.AuthorId}}" />
+        <input type="hidden" name="audience" value="{{status.Audience}}" />
+        <p>{{status.Content}}</p>
+        <small>
+            Posted {{status.TimePosted}}
+            {{#if status.TimeEdited}}
+            and edited {{status.TimeEdited}}.
+            {{else}}
+            {{/if}}
+        </small>
+    </blockquote>
+</script>

@@ -1,0 +1,232 @@
+﻿@{
+    ViewBag.Title = "Home | Wayfarer";
+}
+
+
+<!-- Stack the columns on mobile by making one full-width and the other half-width -->
+<div class="row">
+    <div class="col-6 col-lg-2">
+        <ul class="nav nav-pills nav-stacked" style="margin: 20px 0 0 20px;">
+            <li class="active"><a href="#">Friends:</a></li>
+            @foreach (Wayfarer.Mvc.Models.UserProfile friend in ViewBag.friends)
+            {
+                <li> <a href="http://@HttpContext.Current.Request.Url.Authority/profiles/@friend.UserName">@friend.UserName</a></li>
+            }
+        </ul>
+    </div>
+
+    <div class="col-12 col-lg-10">
+        <div id="status_post" style="margin: 20px 0 0 0;">
+            <form class="form">
+                <textarea name="new_post_content" class="form-control" placeholder="Enter new post here..."></textarea>
+                <button type="submit" class="btn btn-danger btn-lg" style="margin: 0px 10px 10px 20px; width: 90px; height: 37px;">Post!</button>
+                <div style="clear:both;"></div>
+                <div class="checkbox">
+                  <label>
+                    <input type="checkbox" name="new_post_limited_junk" checked="checked"> Limited?
+                  </label>
+                </div>
+            </form>
+        </div>
+        <div id="status_container"></div>
+    </div>
+</div>
+
+
+
+
+
+
+@section scripts {
+<script type="text/javascript">
+
+    var wayfarerHub = null;
+
+    /*Post New Status*/
+    $('form').submit(function () {
+        var form_objects = $('form').serializeArray();
+        $.each($("[name='new_post_limited_junk']"), function (key, value) {
+            form_objects.push({
+                name: "new_post_limited",
+                value: $(value).is(':checked') ? 'true' : 'false'
+            });
+        });
+        $.ajax({
+            url: "@Url.Action("PostStatus","Home")",
+                data: form_objects,
+                method: "POST"
+            }).done(function (data) {
+                //console.log(data);
+                if (data == 'True') /*fucking ASP.NET*/
+                {
+                    /*toastr.success('Sucessfully posted!');*/
+                    $("textarea[name='new_post_content']").val("");
+                }
+                
+                /*[tc] #todo add user notifications of successful edit*/
+            });
+            return false;
+    });
+
+
+    /* FEED */
+
+    var statuses = new Array();				/*[tc] stores all statuses received*/
+    var status_container = $('#status_container');
+    var status_template; 					/*[tc] handlebars template*/
+    var pixels_before_load = 200;			/*[tc] global var - how many pixels before scrolling the end of the page will we load new content*/
+
+    /*Fills the top of the statuses DOM from the statuses global var*/
+    function forceWriteTop() {
+        //toastr.success('forceWriteTop() called.');
+        var latest_id = getLatestStatusId();
+        var new_statuses = new Array();
+        for (var i = 0; i < statuses.length; i++) {
+            if (latest_id == undefined || statuses[i].StatusId > latest_id) { /*newer status, or no statuses already*/
+                //toastr.success('there is a new status!');
+                new_statuses.push(statuses[i]);
+            }
+        }
+        new_statuses.reverse(); /*change order for prepending into DOM*/
+        for (var i = 0; i < new_statuses.length; i++) {
+            $(status_container).prepend(status_template({ status: new_statuses[i] }));
+            $(status_container).children().first().hide();
+            $(status_container).children().first().slideDown();
+        }
+    }
+
+    /*Fills the bottom of the statuses DOm from the statuses global var*/
+    function forceWriteBottom() {
+        //console.log('forceWriteBottom() called.');
+        var oldest_id = getOldestStatusId();
+        for (var i = 0; i < statuses.length; i++) {
+            if (statuses[i].StatusId < oldest_id) {
+                $(status_container).append(status_template({ status: statuses[i] }));
+                $(status_container).children().last().hide();
+                $(status_container).children().last().slideDown();
+            }
+        }
+    }
+
+    /*Fired when a user scrolls, or when new content arrived. Checks where the user has scrolled, and loads new content into DOM, or requests new content*/
+    function OnScrollOrUpdate() {
+        //toastr.success('onScrollUpdate() called!');
+        /*if user can see the top of the div, fill with new content (if any)*/
+        if ($(window).scrollTop() < $(status_container).offset().top) {
+            forceWriteTop();
+        }
+        /*if user is close to bottom, fire an AJAX call and fill bottom DOM*/
+        else if ($(window).scrollTop() + $(window).height() >= $(status_container).offset().top + $(status_container).height()) {
+            var oldest_id = getOldestStatusId();
+            getFeed(null, oldest_id, null, forceWriteBottom);
+        }
+    }
+
+    /*On Scroll Event*/
+    $(window).scroll(function () {
+        //console.log('Window scroll event fired.')
+        OnScrollOrUpdate();
+    });
+
+    /*On Document Load Event*/
+    $(function () {
+        /*template compilation*/
+        status_template = Handlebars.compile($("#status-template").html());
+        /*initial status load*/
+        getFeed(null, null, null, forceWriteTop);
+
+        wayfarerHub = $.connection.wayfarerHub;
+
+        /*SignalR method to be triggered from server when new content is available*/
+        wayfarerHub.client.refreshFeed = function () {
+            /*toastr.success("REFRESH FEED INITIATED");*/
+            /*determine latest id, to only get newer stuff in my call*/
+            var latest_status = getLatestStatusId();
+            //toastr.success('latest status: ' + latest_status);
+            /*something changed the feed, call WebAPI to refresh*/
+            getFeed(null, null, latest_status, OnScrollOrUpdate)
+        }
+
+        $.connection.hub.error(function () {
+            toastr.error('An error occured while connecting to Wayfarer SignalR hub.')
+        });
+
+        $.connection.hub.start().done(function () {
+            //toastr.success('Connected to Wayfarer SignalR hub!')
+            geolocateMe();
+            window.setInterval(geolocateMe, 30000);
+            });
+        });
+
+        /*Gets the user statuses via a WebAPI REST service*/
+        function getFeed(skip, beforeId, afterId, callback) {
+            //console.log('getFeed() called.');
+            $.ajax(
+            {
+                url: "/api/feed",
+                contentType: "text/json",
+                type: "GET",
+                data: {skip: skip, beforeId: beforeId, afterId: afterId },
+                success: function (data) {
+                    $.each(data, function (index) {
+                        console.log(data[index].Content);
+                        statuses.push({
+                            StatusId: data[index].StatusId,
+                            AuthorId: data[index].AuthorId,
+                            AuthorName: data[index].AuthorName,
+                            AuthorUrl: data[index].AuthorUrl,
+                            Content: data[index].Content,
+                            Audience: data[index].Audience,
+                            TimePosted: data[index].TimePosted,
+                            TimeEdited: data[index].TimeEdited == null ? false : data[index].TimeEdited
+                        });
+                    });
+                    callback();
+                },
+                error: function (data) {
+                    console.log('An error occured while fetching your feed :( ' + data);
+                }
+            });
+        }
+
+        /*Helper Functions*/
+        function getLatestStatusId() { return status_container.children().first().find("input[name='statusId']").val(); }
+        function getOldestStatusId() { return status_container.children().last().find("input[name='statusId']").val(); }
+        function geolocateMe() {
+            if (Modernizr.geolocation) {
+                var options = { enableHighAccuracy: true, timeout: 10000, maximumAge: 10000 };
+                navigator.geolocation.getCurrentPosition(geolocateMeCallbackSuccess, geolocateMeCallbackError)
+            }
+        }
+        function geolocateMeCallbackSuccess(arg) {
+            var geoloc_timestamp = arg.timestamp;
+            var geoloc_latitude = arg.coords.latitude;
+            var geoloc_longitude = arg.coords.longitude;
+            var accuracy = arg.coords.accuracy;
+            wayfarerHub.server.saveGeolocation(geoloc_longitude, geoloc_latitude);
+        };
+        function geolocateMeCallbackError(error) {
+            var code = error.code;
+            /* 1 permission denied | 2 position unavailable – network down / satellites offline | 3 timeout */
+            var message = error.message;
+        };
+
+    </script>
+}
+
+<script id="status-template" type="text/x-handlebars-template">
+    <blockquote class="status">
+        <strong style="position:relative; left: -4px; line-height: 32px;""><a href="{{status.AuthorUrl}}">{{status.AuthorName}}</a>:</strong>
+        <input type="hidden" name="statusId" value="{{status.StatusId}}" />
+        <input type="hidden" name="authorId" value="{{status.AuthorId}}" />
+        <input type="hidden" name="audience" value="{{status.Audience}}" />
+        <p>{{status.Content}}</p>
+        <small>
+            Posted {{status.TimePosted}}
+            {{#if status.TimeEdited}}
+            and edited {{status.TimeEdited}}.
+            {{else}}
+            {{/if}}
+        </small>
+    </blockquote>
+</script>

@@ -1,0 +1,127 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>@ViewBag.Title | Wayfarer</title>
+        <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        @Styles.Render("~/Content/wayfarer")
+    </head>
+
+    <body>
+
+        @if (User.Identity.IsAuthenticated)
+        {
+            <div class="navbar navbar-fixed-top navbar-inverse">
+                <a class="navbar-brand" href="@Url.Action("Index", "Home")" style="padding:0;margin:0;">
+                    <img src="~/Content/images/wayfarer_logo.png" alt="Wayfarer" style="margin: 0 0 0 0; border: 0 0 0 0; padding: 0 0 0 0;"/>
+                </a>
+                <ul class="nav navbar-nav">
+                    <li><a href="http://@HttpContext.Current.Request.Url.Authority/profiles/@User.Identity.Name">Profile</a></li>
+                    <li><a href="@Url.Action("Manage", "Account")">Account</a></li>
+                    <li><a href="javascript:document.getElementById('logoutForm').submit()">Logout</a></li>
+                    <li class="dropdown">
+                        <!--<a data-toggle="dropdown" href="#">Drop me.</a>-->
+                        <input type="search" autocomplete="off" name="search" class="form-control" placeholder="Search..." style="height: 28px; background: #222222; border: solid 1px #999999; margin: 11px 0 0 5px; color: #fff;" />
+                        <ul class="dropdown-menu dropdown-search" role="menu" aria-labelledby="dropdownMenu">
+                            <li class="dropdown-header">Users:</li>
+                            <li><a tabindex="-1" href="#">monroe</a></li>
+                            <li><a tabindex="-1" href="#">tinc2k</a></li>
+                            <li><a tabindex="-1" href="#">homer</a></li>
+                        </ul>
+                    </li>
+                    @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", style = "display:hidden;" }))
+                    {
+                        @Html.AntiForgeryToken()           
+                    }
+                </ul>
+            </div> <!-- /.navbar -->
+        }
+
+        @RenderBody()
+
+    @Scripts.Render("~/bundles/wayfarer")
+    <script src="/signalr/hubs"></script>
+        
+    <script type="text/javascript">
+
+        var search_container;
+        var search_template;
+
+        $(function () {
+            search_container = $('.dropdown-search');
+            search_template = Handlebars.compile($("#search-template").html());
+            //$('.dropdown-search').dropdown('toggle');
+        });
+
+        $("input[name='search']").keyup(function (e) {
+            var searchData = new Array();
+            var value = $("input[name='search']").val();
+            //toastr.success('keyup: ' + value + '(' + value.length + ')');
+            if (value.length > 2)
+            {
+                $.ajax(
+                {
+                    url: "/api/search",
+                    contentType: "text/json",
+                    type: "GET",
+                    data: { query: value},
+                    success: function (data) {
+                        //toastr.success('ajax came back');
+                        $.each(data, function (index) {
+                            searchData.push({
+                                Id: data[index].Id,
+                                Title: data[index].Title,
+                                Url: data[index].Url,
+                                Time: data[index].Time
+                            });
+                        });
+
+                        /*fill search div*/
+                        $('.dropdown-search').show();
+                        $('.dropdown-search').dropdown('toggle');
+                        $(search_container).html('<li class="dropdown-header">Users:</li>');
+                        for (var i = 0; i < searchData.length; i++) {
+                            $(search_container).append(search_template({ searchItem: searchData[i] }));
+                            /*$(search_container).children().last().hide();
+                            $(search_container).children().last().slideDown();*/
+                        }
+                    }
+                });
+            }
+            if (e.which == 13) { /*enter*/
+                //alert('You pressed enter!');
+            }
+            else if (e.which == 8) { /*backspace*/
+                //alert('You pressed backspace!');
+                $(search_container).html('<li class="dropdown-header">Users:</li>');
+            }
+        });
+
+        /*http://stackoverflow.com/questions/1403615/use-jquery-to-hide-a-div-when-the-user-clicks-outside-of-it*/
+        $(document).mouseup(function (e) {
+            if (!$('li.dropdown').is(e.target) // if the target of the click isn't the container...
+                && $('li.dropdown').has(e.target).length === 0) // ... nor a descendant of the container
+            {
+                $('.dropdown-search').hide();
+            }
+            /*click on dropdown link*/
+            if ( $('.dropdown-menu li a').is(e.target) )
+            {
+                window.location.replace( $(e.target).attr('href'));
+                //alert($(e.target).attr('href'));
+            }
+            
+        });
+    </script>
+
+    @RenderSection("scripts", required: false)
+
+    <script id="search-template" type="text/x-handlebars-template">
+        <li role="presentation">
+            <a tabindex="-1" role="menuitem" href="{{searchItem.Url}}">{{searchItem.Title}}</a> 
+        </li>
+    </script>
+
+</body>
+</html>

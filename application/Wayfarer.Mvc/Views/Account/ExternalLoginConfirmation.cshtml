@@ -1,0 +1,36 @@
+﻿@model Wayfarer.Mvc.Models.RegisterExternalLoginModel
+@{
+    ViewBag.Title = "Register | Wayfarer";
+}
+
+<div class="row">
+    <div class="col-md-4 col-md-offset-4">
+        <h1>@ViewBag.Title</h1>
+        <h2>Associate your @ViewBag.ProviderDisplayName account.</h2>
+        <br />
+        @using (Html.BeginForm("ExternalLoginConfirmation", "Account", new { ReturnUrl = ViewBag.ReturnUrl })) {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true)
+
+            <p>
+                You've successfully authenticated with <strong>@ViewBag.ProviderDisplayName</strong>.
+                Please enter a user name for this site below and click the Confirm button to finish
+                logging in.
+            </p>
+
+            @Html.TextBoxFor(m => m.UserName, new { @class="form-control", placeholder="Username" })
+            @Html.ValidationMessageFor(m => m.UserName)
+            <br />
+
+            @Html.HiddenFor(m => m.ExternalLoginData)
+            <input type="submit" class="btn btn-primary" value="Register" />
+        }
+    </div>
+</div>
+
+
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

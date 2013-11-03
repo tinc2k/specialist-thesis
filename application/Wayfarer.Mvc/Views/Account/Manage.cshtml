@@ -1,0 +1,33 @@
+﻿@model Wayfarer.Mvc.Models.LocalPasswordModel
+@{
+    ViewBag.Title = "Manage Account | Wayfarer";
+}
+
+<div class="manage-account">
+    <div class="row">
+        <div class="col-md-4">
+            <h1>Manage Account</h1>
+            <br />
+            <p class="message-success">@ViewBag.StatusMessage</p>
+            <p>You're logged in as <strong>@User.Identity.Name</strong>.</p>
+            @if (ViewBag.HasLocalPassword)
+            {
+                @Html.Partial("_ChangePasswordPartial")
+            }
+            else
+            {
+                @Html.Partial("_SetPasswordPartial")
+            }
+            <br /><br />
+            <section id="externalLogins">
+                @Html.Action("RemoveExternalLogins")
+                @Html.Action("ExternalLoginsList", new { ReturnUrl = ViewBag.ReturnUrl })
+            </section>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

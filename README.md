@@ -604,7 +604,7 @@ Naslovi dokumenta (`<h1>` do `<h6>`) također ima  također imaju drugačiju sem
       <h1>Naslov prve sekcije</h1>
       <p>
         Tekst prve sekcije. <time datetime="2013-03-01">Prošlog petka</time> otvorila su se vrata percepcije. 
-Ostati će otvorena <mark>do sljedeće obavijesti</mark>.
+        Ostati će otvorena <mark>do sljedeće obavijesti</mark>.
       </p>
     </section>
     <section>

@@ -886,27 +886,26 @@ Korisnički zahtjevi su specifikacija visoke razine apstrakcije napisana prirodn
 Na temelju funkcionalnih korisničkih zahtjeva moguće je odrediti temeljne entitete aplikacije, kao što su korisnik (User), korisnički status (User Status), regija korisničkog profila (User Profile Region), prijateljstva (Friendship), geolokacija (Geolocation), te namjenjena publika sadržaja (Audience). U nastavku je prikazan dijagram Entiteti-veze navedenog sustava, koristeći Martinovu notaciju veza i uključujući popis atributa pojedinih entiteta.
 
 ```
-┌───────────┐      ┌─────────────────┐       ┌────────┐
-│Friendship │◄─┐   │UserProfileRegion├──────►│Audience│
-├───────────┤  │   ├─────────────────┤       ├────────┤
-│PK Id      │  │   │PK Id            │       │PK Id   │
-│FK UserId  │  │   │FK UserId        │       │Name    │
-│FK FriendId│  │   │FK AudienceId    │       └───┬────┘
-└───────────┘  │   │Name             │           ▲
-               │   │Value            │           │
-               │   └───────┬─────────┘           │
-               │           ▲                     │  
-┌───────────┐  │    ┌──────┴───────┐      ┌──────┴───────┐
-│Geolocation│  └────┤    User      ├─────►│  UserStatus  │
-├───────────┤       ├──────────────┤      ├──────────────┤
-│PK Id      ├───────┤PK Id         │      │PK Id         │
-│FK UserId  │       │Username      │      │FK UserId     │
-│Timestamp  │       │Email         │      │FK AudienceId │
-│Longitude  │       │Phone         │      │Content       │
-│Latitude   │       │Disabled      │      │TimePosted    │
-└───────────┘       └──────────────┘      │TimeLastEdited│
-                                          └──────────────┘
-                     
+                     ┌───────────────────┐     
+┌─────────────┐      │ UserProfileRegion │      
+│ Friendship  │◄─┐   ├───────────────────┤      ┌──────────┐
+├─────────────┤  │   │ PK Id             ├─────►│ Audience │
+│ PK Id       │  │   │ FK UserId         │      ├──────────┤
+│ FK UserId   │  │   │ FK AudienceId     │      │ PK Id    │
+│ FK FriendId │  │   │ Name              │      │ Name     │     
+└─────────────┘  │   │ Value             │      └────┬─────┘ 
+                 │   └─────────┬─────────┘           ▲
+                 │             ▲                     │  
+┌─────────────┐  │     ┌───────┴──────┐      ┌───────┴────────┐
+│ Geolocation │  └─────┤    User      ├─────►│   UserStatus   │
+├─────────────┤        ├──────────────┤      ├────────────────┤
+│ PK Id       ├────────┤ PK Id        │      │ PK Id          │
+│ FK UserId   │        │ Username     │      │ FK UserId      │
+│ Timestamp   │        │ Email        │      │ FK AudienceId  │
+│ Longitude   │        │ Phone        │      │ Content        │
+│ Latitude    │        │ Disabled     │      │ TimePosted     │
+└─────────────┘        └──────────────┘      │ TimeLastEdited │
+                                             └────────────────┘
 ```
 
 

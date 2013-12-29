@@ -816,7 +816,7 @@ Ugnježđena pravila (en. *nested rules*) omogućuju primjenu stila na ugnježđ
 
 LESS podržava korištenje matematičkih operacija i usporedbi u stvaranju stilova, a kombiniranjem navedene funkcionalnosti mogu se stvoriti posebni uvjeti izvođenja. LESS sadrži i posebne funkcije za upravljanje bojama, dobivanje informacija o bojama i izvođenja operacija poput zaokruživanja brojeva. LESS također sadrži pomoćne metode za obavljanje transformacija boja i funkcije dohvaćanja informacija o bojama, poput svjetline, zasićenosti, količine boje određenog kanala i slično.
 
-```less
+```scss
 // matematičke operacije
 .primjer {
   color: @lightGrey / 2;

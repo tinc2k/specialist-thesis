@@ -857,7 +857,7 @@ LESS podržava korištenje matematičkih operacija i usporedbi u stvaranju stilo
 
 ## 6. Praktični rad: društvena mreža ##
 
-> “What would an ocean be without a monster lurking in the dark? It would be like sleep without dreams.” - *Werner Herzog*
+> *“What would an ocean be without a monster lurking in the dark? It would be like sleep without dreams.”* -Werner Herzog
 
 
 

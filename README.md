@@ -113,7 +113,7 @@ LESS, SignalR, WebAPI, Azure, REST
 
 
 ## 1. Uvod ##
-> "The Internet is the first thing that humanity has built th at humanity doesn't understand, the largest experiment in anarchy that we have ever had." - *Eric Schmidt*
+> “The Internet is the first thing that humanity has built th at humanity doesn't understand, the largest experiment in anarchy that we have ever had.” - *Eric Schmidt*
 
 Svega desetak godina nakon pojave riječi [kiberprostor](https://en.wikipedia.org/wiki/Cyberspace "William Gibson osmislio je riječ kiberprostor (en. cyberspace) za kratku priču Burning Chrome 1982. godine, te ju popularizirao u romanu Neuromancer dvije godine kasnije."), rađa se prva generacija digitalnih domorodaca: građana čije prirodno okruženje čine stalna mrežna povezanost i općedostupnost elektroničkih sadržaja i uređaja. Digitalna fotografija i videografija, društvene mreže i mrežne igre, tekstualna i video- komunikacija u stvarnom vremenu, pseudoanonimnost i alternativni identiteti, trenutne javne diskusije, *open courseware* i kriptovalute fenomeni su uz koje nova generacija umreženih korisnika odrasta, koristeći ih svakodnevno u privatne i poslovne svrhe.
 
@@ -143,7 +143,7 @@ Svrha ovog rada jest pokazati da moderni alati i tehnologije prate izazove koje 
 
 
 ## 2. Arhitektura web aplikacija ##
-> "Perfection is achieved, not when there is nothing more to add, but when there is nothing left to take away." - *Antoine de Saint-Exupéry*
+> “Perfection is achieved, not when there is nothing more to add, but when there is nothing left to take away.” - *Antoine de Saint-Exupéry*
 
 Softverska arhitektura je apstrakcija koja prikazuje strukturu programskog rješenja: način promatranja rješenja odnosno njegovih podsustava i njihovih međusobnih odnosa. Pojam arhitekture odnosi se na apstraktan pogled koji obuhvaća samo najvažnije čimbenike programskog rješenja, dok detalji implementacije i specifičnosti konačnog rješenja najčešće ostaju isključeni iz razmatranja do kasnijih faza razvoja. Prema Brooksu[*](http://en.wikipedia.org/wiki/The_Mythical_Man-Month "Brooks, F., The Mythical Man-Month: Essays on Software Engineering, 1995."), arhitektura sustava predstavlja viziju njegove svrhe i način ostvarivanja iste. 
 
@@ -205,7 +205,7 @@ Iz navedenih razloga postaje očito kako niti jedna ranije navedena arhitektura 
 
 
 ## 3. Podatkovni sloj i *hosting* ##
-> "At a hundred million megabytes per second, you begin to make out certain blocks in midtown Manhattan, outlines of hundred-year-old industrial parks ringing the old core of Atlanta." - *William Gibson*
+> “At a hundred million megabytes per second, you begin to make out certain blocks in midtown Manhattan, outlines of hundred-year-old industrial parks ringing the old core of Atlanta.” - *William Gibson*
 
 Nakon dugogodišnje dominacije relacijskih baza podataka, upravljanje podacima web aplikacije posljednjih je godina drastično izmjenjeno pojavom  novih tehnologija kao što su NoSQL i Web Storage, ali i promjenom  u trendovima korištenja pojedinih arhitektura, programskih jezika i *frameworka*. Popularnost JavaScripta i modernih *lightweight* arhitektura web servisa poput REST-a doprinijela je širenju JSON (JavaScript Object Notation), odnosno BSON (Binary JSON) formata pohrane koji omogućuju korištenje objekata u svim slojevima aplikacije bez operacija transformacije. (Casonato et al., 2013., 13.)
 
@@ -397,62 +397,61 @@ U nastavku  slijedi primjer jednostavne node.js aplikacije koja posjeduje HTTP p
 
 
 ```javascript
-var http = require('http'); //biblioteka HTTP poslužitelja
-var url = require('url');   //url parsiranje
-var fs = require('fs');     //pristup datotečnom sustavu
+var http = require('http'); /* biblioteka HTTP poslužitelja */
+var url = require('url');   /* url parsiranje */
+var fs = require('fs');     /* pristup datotečnom sustavu */
 
-http.createServer(function (req, res) { //proslijeđivanje anonimne callback metode
-    var url_parts = url.parse(req.url);
+http.createServer(function (req, res) { /* proslijeđivanje anonimne callback metode */
+  var url_parts = url.parse(req.url);
 
-    //upravljanje rutom
-    var reg_css = new RegExp('^(/css/)');
-    if (reg_css.exec(url_parts.pathname) != null) {
-        handleDeliver('.' + url_parts.pathname, 'text/css')
-    } else {
-        switch (url_parts.pathname) {
-            case '/':
-                handleDeliver('./index.html', 'text/html')
-                break;
-            case '/about':
-                handleDeliver('./about.html', 'text/html')
-                break;
-            default:
-                handleNotFound(url_parts.pathname, req, res);
-        }
+  /* upravljanje rutom */
+  var reg_css = new RegExp('^(/css/)');
+  if (reg_css.exec(url_parts.pathname) != null) {
+    handleDeliver('.' + url_parts.pathname, 'text/css')
+  } else {
+    switch (url_parts.pathname) {
+      case '/':
+        handleDeliver('./index.html', 'text/html')
+        break;
+      case '/about':
+        handleDeliver('./about.html', 'text/html')
+        break;
+      default:
+        handleNotFound(url_parts.pathname, req, res);
     }
-    return;
+  }
+  return;
 
-    //dostava sadržaja (status code 200)
-    function handleDeliver(path, mime) {
-        console.log('200 on ' + path + '(' + mime + ')');
-        fs.readFile(path, function (error, content) {
-            if (error) {
-                handleError(error);
-            } else {
-                res.writeHead(200, { 'Content-Type': mime });
-                res.end(content, 'utf-8');
-            }
-        });
-    }
+  /* dostava sadržaja (status code 200) */
+  function handleDeliver(path, mime) {
+    console.log('200 on ' + path + '(' + mime + ')');
+    fs.readFile(path, function (error, content) {
+      if (error) {
+        handleError(error);
+      } else {
+        res.writeHead(200, { 'Content-Type': mime });
+        res.end(content, 'utf-8');
+      }
+    });
+  }
 
-    //resurs nije pronađen (status code 404)
-    function handleNotFound(url, req, res) {
-        console.log('404 on ' + url);
-        res.writeHead(404, { 'Content-Type': 'text/html' });
-        res.write("<h1>404</h1>");
-        res.end("The page '" + url + "' could not be found :/");
-    }
+  /* resurs nije pronađen (status code 404) */
+  function handleNotFound(url, req, res) {
+    console.log('404 on ' + url);
+    res.writeHead(404, { 'Content-Type': 'text/html' });
+    res.write("<h1>404</h1>");
+    res.end("The page '" + url + "' could not be found :/");
+  }
 
-    //greška (status code 500)
-    function handleError(error) {
-        console.log('500 on ' + error);
-        res.writeHead(500);
-        res.end();
-    }
+  /* greška (status code 500) */
+  function handleError(error) {
+    console.log('500 on ' + error);
+    res.writeHead(500);
+    res.end();
+  }
 
-}).listen(8888);    //poslužitelj aktivan na portu 8888
+}).listen(8888); /* poslužitelj aktivan na portu 8888 */
 console.log('Server running at http://localhost:8888/');
-
 ```
 
 Važno je napomenuti kako node.js posjeduje iznimno malo ugrađene - vlastite funkcionalnosti, međutim većinu klasične *web framework* funkcionalnosti moguće je implementirati putem raznih *third-party* biblioteka (modula), kao što su node_redis (Redis klijent), cradle (CouchDB biblioteka), note-static (posluživanje statičkog sadržaja), async (asinkrono programiranje) i jade (tempating engine). Node.js također posjeduje vlastiti alata za upravljanje paketima (en. *package manager*), kao i *driver* za MongoDB sustav za upravljanje NoSQL  bazama  podataka.
@@ -871,3 +870,7 @@ http://highlightjs.org/static/test.html
 [*]()
 [*]()
 [*]()
+
+> “” - **
+> “” - **
+> “” - **

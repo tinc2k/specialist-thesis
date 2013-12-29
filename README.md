@@ -113,7 +113,7 @@ LESS, SignalR, WebAPI, Azure, REST
 
 
 ## 1. Uvod ##
-> “*The Internet is the first thing that humanity has built th at humanity doesn't understand, the largest experiment in anarchy that we have ever had.*” - Eric Schmidt
+> “*The Internet is the first thing that humanity has built that humanity doesn't understand, the largest experiment in anarchy that we have ever had.*” - Eric Schmidt
 
 Svega desetak godina nakon pojave riječi [kiberprostor](https://en.wikipedia.org/wiki/Cyberspace "William Gibson osmislio je riječ kiberprostor (en. cyberspace) za kratku priču Burning Chrome 1982. godine, te ju popularizirao u romanu Neuromancer dvije godine kasnije."), rađa se prva generacija digitalnih domorodaca: građana čije prirodno okruženje čine stalna mrežna povezanost i općedostupnost elektroničkih sadržaja i uređaja. Digitalna fotografija i videografija, društvene mreže i mrežne igre, tekstualna i video- komunikacija u stvarnom vremenu, pseudoanonimnost i alternativni identiteti, trenutne javne diskusije, *open courseware* i kriptovalute fenomeni su uz koje nova generacija umreženih korisnika odrasta, koristeći ih svakodnevno u privatne i poslovne svrhe.
 
@@ -383,7 +383,7 @@ Najpopularnije moderne JavaScript pakete možemo smjestiti u aplikacijske *frame
 
 S ciljem unaprijeđenja kvalitete JavaScript koda stvoreni su brojni alati za statičku analizu, od kojih su najpopularniji [JSLint](http://www.jslint.com/lint.html) i njegov konfigurabilniji fork [JSHint](http://www.jshint.com/), te alati za analizu DOM modela web aplikacija, kao što je DOM Monster. Značajna je i pojava online editora i alata za pisanje JavaScript aplikacija ([Cloud9 IDE](https://c9.io/), [ShiftEdit](https://shiftedit.net/), [codeanywhere](https://codeanywhere.net/)), te servisa za prototipiziranje i dijeljenje snippeta ([jsFiddle](http://jsfiddle.net/), [Tinkerbin](http://tinkerbin.heroku.com/), [Pastebin](http://pastebin.com/)). 
 
-Rastom broja *front-end* biblioteka uključenih u pojedinu web aplikaciju, javljaju se problemi koji su donedavno bili svojstveni *back-end* razvoju: *workflow* optimizacija, upravljanje paketima, automatizacija *build* procesa, *lazy loading* resursa, te problemi vezani uz prijenos podataka i performanse preglednika, poput minifikacije i kombiniranja biblioteka te uranjene kompilacije predložaka. Kako bi se poboljšale performanse učitavanja web aplikacija, upotrebljavaju su biblioteke poput [RequireJS](http://requirejs.org/) koje omogućuju asinhrono učitavanje resursa poput datoteka i modula odnosno biblioteka u najkasnijem trenutku, smanjujući time broj resursa potreban za inicijalno učitavanje aplikacije. 
+Rastom broja *front-end* biblioteka uključenih u pojedinu web aplikaciju, javljaju se problemi koji su donedavno bili svojstveni *back-end* razvoju: *workflow* optimizacija, upravljanje paketima, automatizacija *build* procesa, *lazy loading* resursa, te problemi vezani uz prijenos podataka i performanse preglednika, poput minifikacije i kombiniranja biblioteka te uranjene kompilacije predložaka. Kako bi se poboljšale performanse učitavanja web aplikacija, upotrebljavaju su biblioteke poput [RequireJS](http://requirejs.org/) koje omogućuju asinkrono učitavanje resursa poput datoteka i modula odnosno biblioteka u najkasnijem trenutku, smanjujući time broj resursa potreban za inicijalno učitavanje aplikacije. 
 
 Upravljanje paketima omogućeno je putem projekata poput [Bowera](http://bower.io/) – sustava za upravljanje paketima cjelokupnog *front-enda* koji omogućuje definicije zavisnosti paketa, koristi Git za verzioniranje te posjeduje API za konzumiranje paketa. Brojni procesi *front-end* razvoja poput JavaScript i CSS transpilacije, uranjene kompilacije predložaka, statičke analize, izvršavanja unit testova te kombiniranja i minifikacije paketa mogu se automatizirati koristeći [GRUNT](http://gruntjs.com/) i slične projekte, dok se cjelokupni radni tok (en. workflow) može provoditi alatima poput [Yeomana](http://yeoman.io/).
 
@@ -546,7 +546,7 @@ Knockout.js i slične biblioteke posebno su korisne u dva scenarija: *web* aplik
 U odnosu na ranije verzije HyperText Markup Language specifikacija (kao što su W3C HTML 4.01, W3C XHTML 1.1), HTML5 donosi veliki broj važnih noviteta, kao što su novi semantički elementi i atributi, poboljšanja *web* formi, sučelja za *web* aplikacije (en. API - *Application Programming Interface*), proširene mogućnosti iscrtavanja (Canvas, Scalable Vector Graphics) i nativni multimedijski elementi poput zvuka i video sadržaja.
 Nažalost, u trenutku pisanja ovog rada nije moguće reći da je postignut konsenzus u definiranju točnog skupa tehnologija koje definiraju HTML5. Također, neovisno o definiranju samog standarda, različiti preglednici ne podržavaju iste HTML5 tehnologije, niti postoji dogovoreni redoslijed kojim bi se osigurala većinska kompatibilnost određenih mogućnosti, ili vremenski rokovi implementacije.
 
-Iako je W3C, odnosno World Wide Web Consortium vodeća međunarodna organizacija na području *web* standarda, njezin utjecaj već dugi niz godina slabi zbog vlastite tromosti u uspostavljanju novih standarda koji bi pratili potrebe razvoja modernih *web* aplikacija, kao što su jednostavnija asinhrona komunikacija, standardizirana alternativa XML-u u razmjeni podataka, semantika koju tražilice mogu kvalitetnije interpretirati, dogovoreni otvoreni formati za multimediju (zvuk, video, tipografija), manipulacija grafikom u pregledniku, podrška za nove hardverske mogućnosti mobilnih uređaja (akcelerometar, jačina svjetla, jačina pritiska) i slično.
+Iako je W3C, odnosno World Wide Web Consortium vodeća međunarodna organizacija na području *web* standarda, njezin utjecaj već dugi niz godina slabi zbog vlastite tromosti u uspostavljanju novih standarda koji bi pratili potrebe razvoja modernih *web* aplikacija, kao što su jednostavnija asinkrona komunikacija, standardizirana alternativa XML-u u razmjeni podataka, semantika koju tražilice mogu kvalitetnije interpretirati, dogovoreni otvoreni formati za multimediju (zvuk, video, tipografija), manipulacija grafikom u pregledniku, podrška za nove hardverske mogućnosti mobilnih uređaja (akcelerometar, jačina svjetla, jačina pritiska) i slično.
 
 Iz navedenih razloga, 2004. godine grupa programera iz Applea, Mozille i Opere osniva WHATWG, odnosno Web Hypertext Application Technology Working Group čija je osnovna zadaća pravovremeno standardiziranje nove HTML specifikacije i njezinu implementaciju u vodećim preglednicima. (Hickson, I., 2004.) Prijedlog WHATWG grupe jest stalna evolucija HTML specifikacije prema nadolazećim potrebama i bez jasne distinkcije između pojedinih verzija, odnosno postojanje fluidne specifikacije prema kojoj bi se nadograđivala programska implementacija popularnih preglednika. 2007. godine W3C preuzima tekuću WHATWG specifikaciju na temelju koje stvara početnu točku W3C HTML5 standarda, odnosno prvu javnu radnu inačicu (en. First Public Working Draft).
 
@@ -628,7 +628,7 @@ Canvas je kontejner element za programatsko iscrtavanje dvodimenzionalne grafike
 
 HTML5 Geolocation API pruža sučelje za određivanje geografske lokacije i kretanja korisnika. Potaknuti sigurnosnim implikacijama i privatnošću korisnika, trenutna W3 HTML5 radna specifikacija nalaže da preglednik mora eksplicitno tražiti dopuštenje za korištenje geolokacijskih podataka od korisnika prilikom prvog korištenja, odnosno zahtjeva za korištenjem na određenoj domeni.[*](http://dev.w3.org/geo/api/spec-source.html) Samu lokaciju moguće je redoslijedom rastuće prezicnosti odrediti koristeći IP adresu korisnika, korištenu bežičnu mrežu odnosno njezinu pristupnu točku, korišteni mobilni odašiljač ili GPS navigacijski modul ugrađen u mobilni uređaj.
 
-W3 Geolocation API radni standard zahtjeva od preglednika minimalno četiri parametra: vrijeme uzimanja uzorka, zemljopisnu širinu, zemljopisnu dužinu i preciznost mjerenja, odnosno toleranciju na grešku izraženu u metrima. Neobavezni dopunski parametri su nadmorska visina, te brzina i smjer kretanja koji se mogu odrediti prema korisnikovom prethodnom položaju. API također dozvoljava ulazni parametar tražene preciznosti, pa će tako u slučaju zatražene niske preciznosti na mobilnim uređajima koristiti celularnu triangulaciju – nepreciznu, ali energetski štedljivu tehnologiju, dok će u slučaju tražene visoke preciznosti upotrijebiti ugrađeni GPS navigacijski modul kako bi postigla traženu preciznost uz veći energetski trošak. U trenutku pisanja ovog rada, Apple iOS i Google Android operacijski sustavi omogućuju odvojeno postavljanje ovlasti za nisku i visoku preciznost geolokacije po pojedinoj domeni. Geolokacijski zahtjevi uvijek su asinhroni jer nije moguće jamčiti brzi odziv kada isti zahtjeva korisničku dozvolu i pobudu odgovarajućih uređaja ili mehanizama za geolokaciju.
+W3 Geolocation API radni standard zahtjeva od preglednika minimalno četiri parametra: vrijeme uzimanja uzorka, zemljopisnu širinu, zemljopisnu dužinu i preciznost mjerenja, odnosno toleranciju na grešku izraženu u metrima. Neobavezni dopunski parametri su nadmorska visina, te brzina i smjer kretanja koji se mogu odrediti prema korisnikovom prethodnom položaju. API također dozvoljava ulazni parametar tražene preciznosti, pa će tako u slučaju zatražene niske preciznosti na mobilnim uređajima koristiti celularnu triangulaciju – nepreciznu, ali energetski štedljivu tehnologiju, dok će u slučaju tražene visoke preciznosti upotrijebiti ugrađeni GPS navigacijski modul kako bi postigla traženu preciznost uz veći energetski trošak. U trenutku pisanja ovog rada, Apple iOS i Google Android operacijski sustavi omogućuju odvojeno postavljanje ovlasti za nisku i visoku preciznost geolokacije po pojedinoj domeni. Geolokacijski zahtjevi uvijek su asinkroni jer nije moguće jamčiti brzi odziv kada isti zahtjeva korisničku dozvolu i pobudu odgovarajućih uređaja ili mehanizama za geolokaciju.
 
 ```javascript
 $(function () {
@@ -857,7 +857,45 @@ LESS podržava korištenje matematičkih operacija i usporedbi u stvaranju stilo
 
 ## 6. Praktični rad: društvena mreža ##
 
-> “*What would an ocean be without a monster lurking in the dark? It would be like sleep without dreams.*” -Werner Herzog
+> “*What would an ocean be without a monster lurking in the dark? It would be like sleep without dreams.*” - Werner Herzog
+
+S ciljem prikaza dostupnih alata i tehnologija razvoja modernih web aplikacija, ovaj rad prikazuje izradu pojednostavljene društvene mreže u koju se korisnici mogu prijaviti koristeći identitete vanjskih pružatelja usluga (Google, Facebook), održavati korisničke profile i dijeliti sadržaj sa različitim krugovima korisnika. Aplikacija će biti implementirana koristeći ASP.NET MVC4 *web framework* i SQL Azure distribuiranu bazu podataka, pri čemu će aplikacija i baza biti dostupne i replicirane putem Microsoft Azure *cloud* usluga. REST servisi namjenjeni asinkronom dohvatu sadržaja biti će napisani koristeći WebAPI biblioteku, dok će se putem SignalR *real-time web* biblioteke omogućiti dostava novog sadržaja korisnicima u trenutku njegovog stvaranja bez potrebe ponovnog učitavanja stranice ili vremenskim odmakom koji uobičajeno asociramo uz AJAX i srodne asinkrone tehnologije. Tokom razvoja također će se koristiti HTML5 za pisanje sloja pogleda i geolokaciju korisnika, LESS za pisanje CSS stilskih značajki te Twitter Bootstrap kao *framework* klijentske strane.
+
+### 6. 1. Inženjerstvo zahtjeva ###
+
+Inženjerstvo zahtjeva (en. *requirements engineering*) je proces izrade specifikacije programskog rješenja. (Sommerville, 2007., 83.) Prema razini detalja, razlikujemo korisničke zahtjeve, zahtjeve sustava i specifikaciju programske potpore. Korisnički zahtjevi i zahtjevi sustava razlikuju se prema sadržaju:
+
+ - funkcionalni zahtjevi – usluge sustava i njegova interakcija s okolinom
+ - nefunkcionalni zahtjevi
+ - zahtjevi domene primjene
+
+Korisnički zahtjevi su specifikacija visoke razine apstrakcije napisana prirodnim jezikom i grafičkim dijagramima. Zahtjevi sustava su detaljna specifikacija sustava napisana strukturiranim prirodnim jezikom, posebnim jezicima za oblikovanje sustava, dijagramima i matematičkom notacijom. Specifikacija programske potpore najdetaljniji je opis koji objedinjuje korisničke zahtjeve i zahtjeve sustava. U sklopu ovog rada, razmatrati ćemo funkcionalne korisničke zahtjeve:
+
+ - javna web aplikacija dostupna iz web preglednika bez nativnih komponenti
+ - registracija korisnika i mogućnost prijave sa postojećim Google ili Facebook korisničkim računima
+ - korisnici održavaju korisničke profile i statuse, koji mogu biti javni ili vidljivi samo prijateljima
+ - korisnički profili mogu se sastojati od različitih segmenata, koji posjeduju različite razine privatnosti
+ - prijateljstvo sa drugim korisnicima se postiže dodavanjem korisnika u vlastiti krug prijatelja – čime navedenom korisniku postaje vidljiv sadržaj namjenjen prijateljima
+ - korisnički profili imaju jasne javne adrese (na primjer: domena.hr/korisnik/ime.prezime)
+ - novi korisnički statusi vidljivi su u stvarnom vremenu prijateljima i/ili javnosti
+ - pretraga korisnika vrši se prema korisničkom imenu
+ - prilikom korištenja aplikacije, bilježi se geolokacija svih korisnika za daljnju analizu u drugim sustavima
+
+### 6.2. Modeliranje podataka i procesa ###
+
+Na temelju funkcionalnih korisničkih zahtjeva moguće je odrediti temeljne entitete aplikacije, kao što su korisnik (User), korisnički status (User Status), regija korisničkog profila (User Profile Region), prijateljstva (Friendship), geolokacija (Geolocation), te namjenjena publika sadržaja (Audience). U nastavku je prikazan dijagram Entiteti-veze navedenog sustava, koristeći Martinovu notaciju veza i uključujući popis atributa pojedinih entiteta.
+
+```
+┌───────────┐      ┌─────────────────┐      ┌────────┐
+│Friendship │      │UserProfileRegion│>─────│Audience│
+├───────────┤      ├─────────────────┤      ├────────┤
+│PK Id      │      │PK Id            │      │PK Id   │
+│FK UserId  │      │FK UserId        │      │Name    │
+│FK FriendId│      │FK AudienceId    │      └────────┘
+└───────────┘      │Name             │
+                   │Value            │
+                   └─────────────────┘ 
+```
 
 
 
@@ -874,3 +912,18 @@ http://highlightjs.org/static/test.html
 > “” - **
 > “” - **
 > “” - **
+
+─
+│
+┌
+┐
+└
+┘
+├
+
+┤
+┬
+
+┴
+
+┼

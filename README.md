@@ -113,7 +113,7 @@ LESS, SignalR, WebAPI, Azure, REST
 
 
 ## 1. Uvod ##
-> “The Internet is the first thing that humanity has built th at humanity doesn't understand, the largest experiment in anarchy that we have ever had.” - *Eric Schmidt*
+> “*The Internet is the first thing that humanity has built th at humanity doesn't understand, the largest experiment in anarchy that we have ever had.*” - Eric Schmidt
 
 Svega desetak godina nakon pojave riječi [kiberprostor](https://en.wikipedia.org/wiki/Cyberspace "William Gibson osmislio je riječ kiberprostor (en. cyberspace) za kratku priču Burning Chrome 1982. godine, te ju popularizirao u romanu Neuromancer dvije godine kasnije."), rađa se prva generacija digitalnih domorodaca: građana čije prirodno okruženje čine stalna mrežna povezanost i općedostupnost elektroničkih sadržaja i uređaja. Digitalna fotografija i videografija, društvene mreže i mrežne igre, tekstualna i video- komunikacija u stvarnom vremenu, pseudoanonimnost i alternativni identiteti, trenutne javne diskusije, *open courseware* i kriptovalute fenomeni su uz koje nova generacija umreženih korisnika odrasta, koristeći ih svakodnevno u privatne i poslovne svrhe.
 

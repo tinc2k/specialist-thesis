@@ -668,10 +668,10 @@ Aplikacijski spremnik (en. *application cache*) je tehnologija koja omogućuje p
 ```
 <html manifest=“http://www.domena.hr/datoteka.mf“>
 /* primjer sadržaja manifest datoteke: */
-  index.html
-  stil.css
-  images/logotip.png
-  scripts/backbone.js
+index.html
+stil.css
+images/logotip.png
+scripts/backbone.js
 ```
 
 HTML5 sadrži standarde namjenjene upravljanju datotekama u različite svrhe od prijenosa datoteka sa klijenta na poslužitelj (en. *upload*) i prijenosa u web aplikaciju koristeći *drag&drop* gestu do omogućavanja pristupa datotečnom sustavu. [FileSystem API](http://dev.w3.org/2009/dap/file-system/pub/FileSystem/) omogućuje pristup posebnom kontejnerskom prostoru unutar datotečnog sustava u kojem je moguće čitati, stvarati, mijenjati i brisati datoteke. WHATWG [Drag and Drop](http://www.whatwg.org/specs/web-apps/current-work/multipage/dnd.html#the-dragevent-and-datatransfer-interfaces) specifikacija predstavlja API namijenjen *drag&drop* operacijama s datotekama, odnosno ‘povlačenju’ datoteke iz datotečnog sustava računala u područje *web* aplikacije s ciljem trenutnog korištenja ili proslijeđivanja datoteke na poslužitelj.
@@ -687,20 +687,20 @@ Postoje i biblioteke koje pojednostavljuju otkrivanje svojstava, od kojih je zas
 
 ```javascript
 if (
-    /* ako preglednik podržava <canvas> i canvas text? */
-    Modernizr.canvas && Modernizr.canvastext &&
-    /* preglednik podržava <video> i H.264 ofrmat? */
-    Modernizr.video && Modernizr.video.h264 &&
-    /* preglednik podržava local storage i application cache? */
-    Modernizr.localstorage && Modernizr.applicationcache &&
-    /* preglednik ... webworkers*/
-    Modernizr.webworkers &&
-    /* preglednik ... websockets*/
-    Modernizr.websockets &&   
-    /* preglednik podržava Geolocation API? */
-    Modernizr.geolocation &&   
-    /* preglednik podržava History API? */
-    Modernizr.history
+  /* ako preglednik podržava <canvas> i canvas text? */
+  Modernizr.canvas && Modernizr.canvastext &&
+  /* preglednik podržava <video> i h.264 format? */
+  Modernizr.video && Modernizr.video.h264 &&
+  /* preglednik podržava web storage i application cache? */
+  Modernizr.localstorage && Modernizr.applicationcache &&
+  /* preglednik podržava web workers? */
+  Modernizr.webworkers &&
+  /* preglednik podržava websockets? */
+  Modernizr.websockets &&   
+  /* preglednik podržava geolocation api? */
+  Modernizr.geolocation &&   
+  /* preglednik podržava history api? */
+  Modernizr.history
 ) {...}
 ```
 
@@ -759,71 +759,72 @@ LESS je unazad kompatibilno proširenje CSS jezika koje nudi značajke poput var
 
 LESS podržava varijable koje možemo koristiti za pohranu boja, dimenzija i sličnih podataka. Važna odlika LESS jezika jest *scope*, odnosno pripadnost varijable određenom bloku izvan kojeg je nedostupan (odnosno nedeklariran), stoga je potrebno obratiti pažnju na mjesto definicije.
 
-```less
+```scss
 @tamna: #1b1b1b;
 @svijetla: #8e8e8e;
 @rad: 5px;
 .primjer {
-    color: @tamna;
-    background-color: @svijetla;
-    border-radius: @rad;
+  color: @tamna;
+  background-color: @svijetla;
+  border-radius: @rad;
 }
 ```
 
 *Mixin*, odnosno skup korisnički definiranih pravila obuhvaćen zajedničkim nazivom također je važan LESS koncept, budući da omogućava ponovno iskorištavanje cijelih stilskih blokova za različite selektore. *Mixin* može prihvaćati i parametre na temelju kojih će se vršiti transformacija stilskih značajki. *Mixin* može ili ne mora biti eksplicitno vidiljiv u kompiliranom CSS-u, odnosno ovisno o postojanju praznih zagrada u deklaraciji.
 
-```less
-// Vidljivi mixin:
+```scss
+// vidljivi mixin:
 .mojStil {
-    border: dashed solid #2bff00;
+  border: dashed solid #2bff00;
 }
-// Parametrizirani mixin:
+// parametrizirani mixin:
 .zaobljen (@radius: 5px) {
-	-webkit-border-radius: @radius;
-	-moz-border-radius: @radius;
-	-ms-border-radius: @radius;
-	-o-border-radius: @radius;
-	border-radius: @radius;
+  -webkit-border-radius: @radius;
+  -moz-border-radius: @radius;
+  -ms-border-radius: @radius;
+  -o-border-radius: @radius;
+  border-radius: @radius;
 }
-// Nevidljivi mixin:
+// nevidljivi mixin:
 .nevidljiv {
-    font: italic 22px Arial,Verdana;
+  font: italic 22px Arial,Verdana;
 }
-// Upotreba mixina u selektoru:
+// upotreba mixina u selektoru:
 #menu a{
-    .mojStil;
-    .nevidljiv;
-    .zaobljen(10);
+  .mojStil;
+  .nevidljiv;
+  .zaobljen(10);
 }
 ```
 
 Ugnježđena pravila (en. *nested rules*) omogućuju primjenu stila na ugnježđenim elementima, odnosno praćenjem DOM strukture dokumenta. Ugnježđeni stilovi se također mogu iskoristiti na drugim mjestima koristeći znak `>` za označavanje roditelj-dijete odnosa elemenata.
 
-```less
+```scss
 .citat {
-	.zaobljen(10px);
-	background: #bbb;
-	font: normal 12px Georgia,serif;
-	width: 370px;
-	padding: 10px 10px 20px 10px;
-	.autor {
-		float: right;
-		margin: 13px 5px 0 0;
-		background: none;
-	}
+  .zaobljen(10px);
+  background: #bbb;
+  font: normal 12px Georgia,serif;
+  width: 370px;
+  padding: 10px 10px 20px 10px;
+  .autor {
+    float: right;
+	margin: 13px 5px 0 0;
+	background: none;
+  }
 }
 ```
 
 LESS podržava korištenje matematičkih operacija i usporedbi u stvaranju stilova, a kombiniranjem navedene funkcionalnosti mogu se stvoriti posebni uvjeti izvođenja. LESS sadrži i posebne funkcije za upravljanje bojama, dobivanje informacija o bojama i izvođenja operacija poput zaokruživanja brojeva. LESS također sadrži pomoćne metode za obavljanje transformacija boja i funkcije dohvaćanja informacija o bojama, poput svjetline, zasićenosti, količine boje određenog kanala i slično.
 
 ```less
-// Matematičke operacije
+// matematičke operacije
 .primjer {
-	color: @lightGrey / 2;
-	font: bold 12px „Helvetica Neue“,arial,sans-serif;
-	width: 400px – 10% + 2em;
+  color: @lightGrey / 2;
+  font: bold 12px „Helvetica Neue“,arial,sans-serif;
+  width: 400px – 10% + 2em;
 }
-// Posebne funkcije
+
+// posebne funkcije
 @var: #bbb;
 @daLiJeBoja: iscolor(@var);
 @daLiJeUrl: isurl(@var);
@@ -832,23 +833,23 @@ LESS podržava korištenje matematičkih operacija i usporedbi u stvaranju stilo
 @zasicenost: saturation(#ff006e);
 @zaokruzeno: round(1.67);
 
-// Uvjetovano izvođenje (guards)
-@a: #000;	/*promjenom ove boje mijenja se pozadinska boja*/
+// uvjetovano izvođenje (guards) - promjenom varijable boje mijenja se i pozadinska boja
+@a: #000;
 .windowDesigner (@a) when (lightness(@a) >= 50%) {
-	color: #000;
+  color: #000;
 }
 .windowDesigner (@a) when (lightness(@a) < 50%) {
-	color: #fff;
+  color: #fff;
 }
 .windowDesigner (@a) {
-	background: @a;
-	font: normal 10px Consolas,Courier,monospace;
-	width: 390px;
-	border: 1px dashed #000;
-	margin: 10px 0 10px 0;
+  background: @a;
+  font: normal 10px Consolas,Courier,monospace;
+  width: 390px;
+  border: 1px dashed #000;
+  margin: 10px 0 10px 0;
 }
 .window{
-	.windowDesigner(@a);
+  .windowDesigner(@a);
 }
 ```
 

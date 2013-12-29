@@ -470,63 +470,67 @@ U nastavku slijedi prikaz osnovne Knockout.js funkctionalnosti:
 
 ```javascript
 <html>
-<head>
-<style type="text/css">
-    .kockica {display: inline-block; width: 8px; height: 8px;}
-</style>
-<script src="jquery-2.0.0.min.js"></script>
-<script src="knockout-2.2.1.js"></script>
+  <head>
+    <style type="text/css">
+      .kockica {display: inline-block; width: 8px; height: 8px;}
+    </style>
+    <script src="jquery-2.0.0.min.js"></script>
+    <script src="knockout-2.2.1.js"></script>
 
-<script type="text/javascript">
-    $(function () {
+    <script type="text/javascript">
+      $(function () {
         function MojViewModel() {
-            var self = this;
-            /*dodijeljena vrijednost*/
-            self.ime = "Nikola";
-            /*observable izmjenjiva promatrana vrijednost*/
-            self.prezime = ko.observable("Tesla");
-            /*kalkulirana rijednost*/
-            self.punoIme = ko.computed(function () {
-                return self.ime + " " + self.prezime();
-            }, self);
-            self.bitcoin = ko.observable();
-            /*javno dostupna metoda za izmjenu vrijednosti*/
-            self.osvjeziBitcoin = function (val) {
-                self.bitcoin(Math.round(Math.random() * 10000) / 100   
-                             + ' USD');
-            };
-            /*izmjenjivo polje objekata*/
-            self.boje = [
-                { ime: "Crvena", vrijednost: "f00" },
-                { ime: "Zelena", vrijednost: "0f0" },
-                { ime: "Plava", vrijednost: "00f" }
-            ];
+          var self = this;
+          /* dodijeljena vrijednost */
+          self.ime = "Nikola";
+          /* observable izmjenjiva promatrana vrijednost */
+          self.prezime = ko.observable("Tesla");
+          /* kalkulirana vrijednost */
+          self.punoIme = ko.computed(function () {
+            return self.ime + " " + self.prezime();
+          }, self);
+          self.bitcoin = ko.observable();
+          /* javno dostupna metoda za izmjenu vrijednosti */
+          self.osvjeziBitcoin = function (val) {
+            self.bitcoin(Math.round(Math.random() * 10000) / 100 + ' USD');
+          };
+          /* izmjenjivo polje objekata */
+          self.boje = [
+            { ime: "Crvena", vrijednost: "f00" },
+            { ime: "Zelena", vrijednost: "0f0" },
+            { ime: "Plava", vrijednost: "00f" } 
+          ];
         }
         var vm = new MojViewModel();
-        /*primjena instanciranog viewmodela*/
+        /* primjena instanciranog viewmodela */
         ko.applyBindings(vm);
-        /*inicijalna vrijednost*/
+        /* inicijalna vrijednost  */
         vm.bitcoin('Nepoznato');
-    });
-</script>
-</head>
+      });
+    </script>
+  </head>
 
-<body>
+  <body>
     <!-- data-bind tipa text je jednostrano izmjenjiv-->
     <p>Ime: <strong data-bind="text: ime"></strong></p>
+
     <!-- data-bind tipa value je obostrano izmjenjiv -->
-    <p>Prezime: <input data-bind="value: prezime" /></p> 
+    <p>Prezime: <input data-bind="value: prezime" /></p>
+
     <p>Puno ime: <strong data-bind="text: punoIme"></strong></p>
-     <!-- poziv metode viewmodela na događaj (klik) -->
+
+    <!-- poziv metode viewmodela na događaj (klik) -->
     <button data-bind="click: osvjeziBitcoin">Osvježi BTC </button>
+    
     <p>Bitcoin: <strong data-bind="text: bitcoin"></strong></p>
+    
     <ul data-bind="foreach: boje"> <!-- templating -->
-        <li>
-            <span data-bind="text: ime"></span>
-            <div data-bind="style: { background: '#' + vrijednost }" class="kockica"></div>
-        </li>    
+      <li>
+        <span data-bind="text: ime"></span>
+        <div data-bind="style: { background: '#' + vrijednost }" class="kockica"></div>
+      </li>    
     </ul>
-</body>
+  </body>
 </html>
 ```
 

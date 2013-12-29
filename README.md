@@ -468,7 +468,7 @@ Kao primjer modernog klijentskog JavaScript *frameworka* u ovom je radu navedena
 
 U nastavku slijedi prikaz osnovne Knockout.js funkctionalnosti:
 
-```javascript
+```html
 <html>
   <head>
     <style type="text/css">

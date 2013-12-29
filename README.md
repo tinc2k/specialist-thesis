@@ -538,7 +538,8 @@ Knockout.js i slične biblioteke posebno su korisne u dva scenarija: *web* aplik
 
 
 ## 5. Prezentacijski sloj ##
-> "New open standards created in the mobile era, such as HTML5, will win." - *Steve Jobs*
+
+> “New open standards created in the mobile era, such as HTML5, will win.” - *Steve Jobs*
 
 ### 5.1. HTML5 ###
 
@@ -569,30 +570,29 @@ Naslovi dokumenta (`<h1>` do `<h6>`) također ima  također imaju drugačiju sem
 
 ```html
 <!DOCTYPE html>
-<html lang=“hr“>
+<html lang="hr">
 <head>
   <title>Primjer HTML5 markupa</title>
-  <link rel=“stylesheet“ type=“text/css“ href=“Content/style.css“ />
-  <link rel=“alternate“ type=“application/atom+xml“
-        title=“Moj Atom feed“ href=“/feed/“ />
-  <link rel=“shortcut icon“ href=“/favicon.ico“>
-  <script src=“Scripts/jquery-1.9.1.js“></script>
+  <link rel="stylesheet" type="text/css" href="Content/style.css" />
+  <link rel="alternate" type="application/atom+xml" title="Moj Atom feed" href="/feed/" />
+  <link rel="shortcut icon" href="/favicon.ico">
+  <script src="Scripts/jquery-1.9.1.js"></script>
 </head>
 
 <body>    
   <header>
-    <img src=“logo.png“ alt=“Logotip“/>
+    <img src="logo.png" alt="Logotip"/>
     <hgroup>
       <h1>Naslov stranice</h1>
-       <h2>Podnaslov</h2>
+      <h2>Podnaslov</h2>
     </hgroup>
   </header>
   <nav>
     <ul>
-      <li><a href=“#“>Početna</a></li>
-      <li><a href=“#“>Blog</a></li>
-      <li><a href=“#“>Članci</a></li>
-      <li><a href=“#“>Galerija</a></li>
+      <li><a href="#">Početna</a></li>
+      <li><a href="#">Blog</a></li>
+      <li><a href="#">Članci</a></li>
+      <li><a href="#">Galerija</a></li>
     </ul>
   </nav>
   <article>
@@ -603,9 +603,7 @@ Naslovi dokumenta (`<h1>` do `<h6>`) također ima  također imaju drugačiju sem
     <section>
       <h1>Naslov prve sekcije</h1>
       <p>
-        Tekst prve sekcije. <time datetime=“2013-03-01“>Prošlog
-        petka</time> otvorila su se vrata percepcije. Ostati će
-        otvorena <mark>do sljedeće obavijesti</mark>.
+        Tekst prve sekcije. <time datetime="2013-03-01">Prošlog petka</time> otvorila su se vrata percepcije. Ostati će otvorena <mark>do sljedeće obavijesti</mark>.
       </p>
     </section>
     <section>

@@ -632,38 +632,34 @@ W3 Geolocation API radni standard zahtjeva od preglednika minimalno četiri para
 
 ```javascript
 $(function () {
-    if (Modernizr.geolocation) {
-        var options = {
-            enableHighAccuracy: false, /* razina preciznosti */
-            timeout: 10000, /* maksimalno vrijeme odziva (ms) */
-            maximumAge: 10000 /* maksimalna starost uzorka (ms) */
-        };
-        navigator.geolocation.getCurrentPosition(mojGeoCallback,
-           mojErrorCallback)
-    } else {
-        alert('Vaš preglednik ne podržava HTML5 Geolocation API.')
-    }
+  if (Modernizr.geolocation) {
+    var options = {
+      enableHighAccuracy: false, /* razina preciznosti */
+      timeout: 10000,            /* maksimalno vrijeme odziva (ms) */
+      maximumAge: 10000          /* maksimalna starost uzorka (ms) */
+    };
+    navigator.geolocation.getCurrentPosition(mojGeoCallback,
+    mojErrorCallback)
+  } else {
+    alert('Vaš preglednik ne podržava HTML5 Geolocation API.')
+  }
 });
 
 function mojGeoCallback(arg) {
-	var vrijeme = arg.timestamp;          /* vrijeme uzorkovanja */
-	var sirina = arg.coords.latitude;     /* zemljopisna širina */
-	var duzina = arg.coords.longitude;    /* zemljopisna dužina */
-	var preciznost = arg.coords.accuracy; /* preciznost uzorka */
-	var visina = arg.coords.altitude;     /* nadmorska visina */
-	var smjer = arg.coords.heading;       /* smjer kretanja */
-	var brzina = arg.coords.speed;        /* brzina kretanja */
+  var vrijeme = arg.timestamp;          /* vrijeme uzorkovanja */
+  var sirina = arg.coords.latitude;     /* zemljopisna širina */
+  var duzina = arg.coords.longitude;    /* zemljopisna dužina */
+  var preciznost = arg.coords.accuracy; /* preciznost uzorka */
+  var visina = arg.coords.altitude;     /* nadmorska visina */
+  var smjer = arg.coords.heading;       /* smjer kretanja */
+  var brzina = arg.coords.speed;        /* brzina kretanja */
 }
 
 function mojErrorCallback(error) {
-    var kod = error.code;
-    /* Greška u prijenosu može biti:
-     *   1 Pristup APIju nije dozvoljen (izbor korisnika)
-     *   2 Pozicija nije dostupna (infrastrukturni problemi)
-     *   3 Istek vremenskog roka odziva
-     */
-    var poruka = error.message;
-    alert('Greška ' + kod + ': ' + poruka)
+  /* greške poput nedozvoljenog pristupa, nedostupne lokacije, timeouta */
+  var kod = error.code; 
+  var poruka = error.message;
+  alert('Greška ' + kod + ': ' + poruka)
 }
 ```
 

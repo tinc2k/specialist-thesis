@@ -143,7 +143,7 @@ Svrha ovog rada jest pokazati da moderni alati i tehnologije prate izazove koje 
 
 
 ## 2. Arhitektura web aplikacija ##
-> “Perfection is achieved, not when there is nothing more to add, but when there is nothing left to take away.” - *Antoine de Saint-Exupéry*
+> “*Perfection is achieved, not when there is nothing more to add, but when there is nothing left to take away.*” - Antoine de Saint-Exupéry
 
 Softverska arhitektura je apstrakcija koja prikazuje strukturu programskog rješenja: način promatranja rješenja odnosno njegovih podsustava i njihovih međusobnih odnosa. Pojam arhitekture odnosi se na apstraktan pogled koji obuhvaća samo najvažnije čimbenike programskog rješenja, dok detalji implementacije i specifičnosti konačnog rješenja najčešće ostaju isključeni iz razmatranja do kasnijih faza razvoja. Prema Brooksu[*](http://en.wikipedia.org/wiki/The_Mythical_Man-Month "Brooks, F., The Mythical Man-Month: Essays on Software Engineering, 1995."), arhitektura sustava predstavlja viziju njegove svrhe i način ostvarivanja iste. 
 
@@ -205,7 +205,7 @@ Iz navedenih razloga postaje očito kako niti jedna ranije navedena arhitektura 
 
 
 ## 3. Podatkovni sloj i *hosting* ##
-> “At a hundred million megabytes per second, you begin to make out certain blocks in midtown Manhattan, outlines of hundred-year-old industrial parks ringing the old core of Atlanta.” - *William Gibson*
+> “*At a hundred million megabytes per second, you begin to make out certain blocks in midtown Manhattan, outlines of hundred-year-old industrial parks ringing the old core of Atlanta.*” - William Gibson
 
 Nakon dugogodišnje dominacije relacijskih baza podataka, upravljanje podacima web aplikacije posljednjih je godina drastično izmjenjeno pojavom  novih tehnologija kao što su NoSQL i Web Storage, ali i promjenom  u trendovima korištenja pojedinih arhitektura, programskih jezika i *frameworka*. Popularnost JavaScripta i modernih *lightweight* arhitektura web servisa poput REST-a doprinijela je širenju JSON (JavaScript Object Notation), odnosno BSON (Binary JSON) formata pohrane koji omogućuju korištenje objekata u svim slojevima aplikacije bez operacija transformacije. (Casonato et al., 2013., 13.)
 
@@ -539,7 +539,7 @@ Knockout.js i slične biblioteke posebno su korisne u dva scenarija: *web* aplik
 
 ## 5. Prezentacijski sloj ##
 
-> “New open standards created in the mobile era, such as HTML5, will win.” - *Steve Jobs*
+> “*New open standards created in the mobile era, such as HTML5, will win.*” - Steve Jobs
 
 ### 5.1. HTML5 ###
 
@@ -857,7 +857,7 @@ LESS podržava korištenje matematičkih operacija i usporedbi u stvaranju stilo
 
 ## 6. Praktični rad: društvena mreža ##
 
-> *“What would an ocean be without a monster lurking in the dark? It would be like sleep without dreams.”* -Werner Herzog
+> “*What would an ocean be without a monster lurking in the dark? It would be like sleep without dreams.*” -Werner Herzog
 
 
 

@@ -933,7 +933,28 @@ Prvi ekran prikazuje prijavu korisnika putem korisničkog imena i lozinke specif
 └──────────────────────────────────────────────────────────┘
 ```
 
-Sljedeći ekran prikazuje početnu stranicu nakon prijave. Na vrhu se nalazi glavni izbornik, koji omogućuje navigaciju na početnu stranicu, stranicu vlastitog profila, stranicu postavki te pretraživanje korisnika. Lijeva kolumna prikazuje listu korisnikovih prijatelja putem koje je moguće posjetiti pojedine korisničke profile. Na desnoj strani nalazi se forma za unos novog korisničkog statusa, te potom novi korisnički statusi korisnika dodanih na listu prijatelja. Ukoliko se korisnik nalazi na vrsti liste, prilikom pojave novog sadržaja (odnosno, kada netko sa liste prijatelja napiše novi status), novi će status prilikom nastanka biti dodan na početnu stranicu svih njegovih online prijatelja. Listanje statusa vrši se ‘beskonačno’, odnosno pomicanjem stranice prema dolje upiti se nastavljaju sve dok postoje kronološki stariji statusi prijatelja, odnosno dok postoji sadržaj koji je moguće učitati. 
+Sljedeći ekran prikazuje početnu stranicu nakon prijave. Na vrhu se nalazi glavni izbornik, koji omogućuje navigaciju na početnu stranicu, stranicu vlastitog profila, stranicu postavki te pretraživanje korisnika. Lijeva kolumna prikazuje listu korisnikovih prijatelja putem koje je moguće posjetiti pojedine korisničke profile. Na desnoj strani nalazi se forma za unos novog korisničkog statusa, te potom novi korisnički statusi korisnika dodanih na listu prijatelja. Ukoliko se korisnik nalazi na vrsti liste, prilikom pojave novog sadržaja (odnosno, kada netko sa liste prijatelja napiše novi status), novi će status prilikom nastanka biti dodan na početnu stranicu svih njegovih *online* prijatelja. Listanje statusa vrši se ‘beskonačno’, odnosno pomicanjem stranice prema dolje upiti se nastavljaju sve dok postoje kronološki stariji statusi prijatelja, odnosno dok postoji sadržaj koji je moguće učitati. 
+
+```
+┌──────────────────────────────────────────────────────────┐ 
+│  feed | profile | settings                               │ 
+├──────────────────────────────────────────────────────────┤
+│ Feed                                                     │ 
+│                                                          │ 
+│ Friends:       │  ┌─────────────────────────┐   ┌──────┐ │ 
+│ Anna Calvi     │  │ Write your post here    │   │ Post │ │ 
+│ Freja Erichsen │  └─────────────────────────┘   └──────┘ │ 
+│ Kat Dennings   │                                         │ 
+│ Tom Waits      │  Anna Calvi:                            │ 
+│ Nick Cave      │  There was a point when it all really   │ 
+│                │  took off and got quite overwhelming.   │ 
+│                │                                         │ 
+│                │  Nick Cave:                             │ 
+│                │  But they haven't put their mittens on  │ 
+│                │  And there's fifteen feet of pure white │ 
+│                                                          │ 
+└──────────────────────────────────────────────────────────┘
+```
 
 
 http://github.github.com/github-flavored-markdown/sample_content.html

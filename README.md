@@ -908,6 +908,33 @@ Na temelju funkcionalnih korisničkih zahtjeva moguće je odrediti temeljne enti
                                              └────────────────┘
 ```
 
+Sljedeći korak oblikovanja sustava jest izrada *wireframea*, odnosno prikaza kostura web aplikacije koji uključuje sadržaj, navigacijske elemente i općenito interakcijske elemente sučelja. *Wireframe* ne sadrži tipografiju, boje niti grafiku, budući da je njegova namjena prikaz funkcionalnosti i prioriteta pojedinog sadržaja.
+
+Prvi ekran prikazuje prijavu korisnika putem korisničkog imena i lozinke specifične za web aplikaciju koju stvaramo, ili mogućnost prijave putem postojećih Facebook ili Google korisničkih računa. Ekran prijave sadrži i prečac na stranicu za registraciju novih korisnika.
+
+```
+┌──────────────────────────────────────────────────────────┐ 
+│  LOGIN                                                   │ 
+│                                                          │ 
+│ ┌──────────────┐                                         │ 
+│ │ Username     │                                         │ 
+│ └──────────────┘                                         │ 
+│ ┌──────────────┐                                         │ 
+│ │ Password     │                                         │ 
+│ └──────────────┘                                         │ 
+│ ┌───────┐                                                │ 
+│ │ Login │                                                │ 
+│ └───────┘                                                │ 
+│                                                          │ 
+│ User another service:                                    │ 
+│ Facebook | Google                                        │ 
+│                                                          │ 
+│ Register if you don't have an account                    │ 
+└──────────────────────────────────────────────────────────┘
+```
+
+Sljedeći ekran prikazuje početnu stranicu nakon prijave. Na vrhu se nalazi glavni izbornik, koji omogućuje navigaciju na početnu stranicu, stranicu vlastitog profila, stranicu postavki te pretraživanje korisnika. Lijeva kolumna prikazuje listu korisnikovih prijatelja putem koje je moguće posjetiti pojedine korisničke profile. Na desnoj strani nalazi se forma za unos novog korisničkog statusa, te potom novi korisnički statusi korisnika dodanih na listu prijatelja. Ukoliko se korisnik nalazi na vrsti liste, prilikom pojave novog sadržaja (odnosno, kada netko sa liste prijatelja napiše novi status), novi će status prilikom nastanka biti dodan na početnu stranicu svih njegovih online prijatelja. Listanje statusa vrši se ‘beskonačno’, odnosno pomicanjem stranice prema dolje upiti se nastavljaju sve dok postoje kronološki stariji statusi prijatelja, odnosno dok postoji sadržaj koji je moguće učitati. 
+
 
 http://github.github.com/github-flavored-markdown/sample_content.html
 https://help.github.com/articles/github-flavored-markdown

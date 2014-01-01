@@ -1129,9 +1129,36 @@ public class HomeController : Controller
 }
 ```
 
+Jedna od prednosti Entity Framework ORM sustava nad izravnom komunikacijom sa bazom podataka jest mogućost korištenja LINQ upitnog jezika nad entitetima, zaobilazeći tako SQL u potpunosti. Pisanje kompleksnih upita postaje mnogostruko jednostavije:
 
+```c#
+public List<Status> GetFeed(string requestor, int? skip = null, int? beforeId = null, int? afterId = null)
+{
+  var publicIds = _context.Friendships
+    .Where(f => f.Profile.UserName == requestor)
+    .Select(s => s.Friend.UserId).ToList();
+  var friendshipIds = _context.Friendships
+    .Where(f => f.Friend.UserName == requestor)
+    .Select(s => s.Profile.UserId).ToList();
+  friendshipIds.Add(_context.UserProfiles
+    .First(u => u.UserName == requestor).UserId);
+  IEnumerable<Status> query = null;
 
+  if (beforeId == null && afterId == null)
+    query = _context.Statuses.Include("Author").Where(s =>
+      (publicIds.Contains(s.Author.UserId) && s.Audience == Audience.Public) ||
+      (friendshipIds.Contains(s.Author.UserId) && s.Audience == Audience.Friends)
+    );
+  else if (beforeId != null) {...}
+  else if (afterId != null) {...}
+    
+  if (skip == null)
+    return query.OrderByDescending(o => o.Id).Take(Config.QueryLimit).ToList();
+  else
+    return query.OrderByDescending(o => o.Id).Skip(skip.Value).Take(Config.QueryLimit).ToList();
+}
 
+```
 
 
 

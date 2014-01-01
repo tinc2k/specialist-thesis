@@ -1308,18 +1308,18 @@ Twitter Bootstrap ne posjeduje vlastiti *templating engine*, pa je u tu svrhu od
 
   <!-- Handlebars.js predložak (template) pojedinog statusa -->
   <script id="status-template" type="text/x-handlebars-template">
-  <blockquote class="status">
-    <strong><a href="{{status.AuthorUrl}}">{{status.AuthorName}}</a>:</strong>
-    <p>{{status.Content}}</p>
-    <small>
-      Posted {{status.TimePosted}}
-      {{#if status.TimeEdited}}
-        and edited {{status.TimeEdited}}.
-      {{else}}
-      {{/if}}
-    </small>
-  </blockquote>
-</script>
+    <blockquote class="status">
+      <strong><a href="{{status.AuthorUrl}}">{{status.AuthorName}}</a>:</strong>
+      <p>{{status.Content}}</p>
+      <small>
+        Posted {{status.TimePosted}}
+        {{#if status.TimeEdited}}
+          and edited {{status.TimeEdited}}.
+        {{else}}
+        {{/if}}
+      </small>
+    </blockquote>
+  </script>
 
 <!-- JavaScript biblioteke - u produkciji spojene i minimizirane -->
 <script src="/Scripts/jquery-2.0.0.js"></script>
@@ -1331,130 +1331,122 @@ Twitter Bootstrap ne posjeduje vlastiti *templating engine*, pa je u tu svrhu od
         
 <script type="text/javascript">
 
-/*globalne varijable*/
-var search_container;
-var status_container
-var search_template;
-var status_template;
-var wayfarerHub = null;
-var statuses = new Array();
+  var search_container;
+  var status_container
+  var search_template;
+  var status_template;
+  var wayfarerHub = null;
+  var statuses = new Array();
 
-/*događaj: učitavanje dokumenta (pojednostavljeno)*/
-$(function () {
+  /* događaj: učitavanje dokumenta (pojednostavljeno) */
+  $(function () {
     search_container = $('.dropdown-search');
     status_container = $('#status_container');
-    /*kompiliranje Handlebars.js predloška*/
-    search_template = Handlebars.compile(
-                                 $("#search-template").html());
-    status_template = Handlebars.compile(
-                                 $("#status-template").html());
-    /*početno učitavanje statusa*/
+    /* kompiliranje Handlebars.js predloška */
+    search_template = Handlebars.compile($("#search-template").html());
+    status_template = Handlebars.compile($("#status-template").html());
+    /* početno učitavanje statusa */
     getFeed(null, null, null, forceWriteTop);
-    /*inicijalizacija SignalR WebSockets veze s poslužiteljem*/
+    /* inicijalizacija SignalR WebSockets veze s poslužiteljem */
     wayfarerHub = $.connection.wayfarerHub;
     $.connection.hub.start().done(function () {
-        geolocateMe(); /*započni slanje geolokacije pri uspostavi*/
-        window.setInterval(geolocateMe, 30000);
+      geolocateMe(); /*započni slanje geolokacije pri uspostavi*/
+      window.setInterval(geolocateMe, 30000);
     });
-    /*definicija SignalR metoda*/
+    /* definicija SignalR metoda */
     wayfarerHub.client.refreshFeed = function () {
-        var latest_status = getLatestStatusId();
-        getFeed(null, null, latest_status, OnScrollOrUpdate)
+      var latest_status = getLatestStatusId();
+      getFeed(null, null, latest_status, OnScrollOrUpdate)
     }
-});
+  });
 
-/*događaj: scroll (pojednostavljeno)*/
-$(window).scroll(function () {
+  /* događaj: scroll (pojednostavljeno) */
+  $(window).scroll(function () {
     OnScrollOrUpdate();
-});
+  });
 
-/*pretraživanje (pojednostavljeno)*/
-$("input[name='search']").keyup(function (e) {
+  /* pretraživanje (pojednostavljeno) */
+  $("input[name='search']").keyup(function (e) {
     $.ajax(
     {
-        url: "/api/search",
-        contentType: "text/json",
-        data: { query: value },
-        success: function (data) {
-            /*punjenje memorije dohvaćenim rezultatima*/
-            $.each(data, function (index) {
-                searchData.push(...);
-            });
-            for (var i = 0; i < searchData.length; i++) {
-            /*kompilacija putem predloška i dodavanje u DOM*/
-            $(search_container).append(
-                search_template({ searchItem: searchData[i]})
-            );
-        }
+      url: "/api/search",
+      contentType: "text/json",
+      data: { query: value },
+      success: function (data) {
+        /*punjenje memorije dohvaćenim rezultatima*/
+        $.each(data, function (index) {
+          searchData.push(...);
+        });
+        for (var i = 0; i < searchData.length; i++) {
+        /*kompilacija putem predloška i dodavanje u DOM*/
+        $(search_container).append(
+          search_template({ searchItem: searchData[i]})
+        );
+      }
     });
-});
+  });
 
-/*zapis novih statusa na vrh stranice (pojednostavljeno)*/
-function forceWriteTop() {
+  /* zapis novih statusa na vrh stranice (pojednostavljeno) */
+  function forceWriteTop() {
     var latest_id = getLatestStatusId();
     var new_statuses = new Array();
     for (var i = 0; i < statuses.length; i++)
-        if (latest_id == undefined ||
-            statuses[i].StatusId > latest_id)
-            new_statuses.push(statuses[i]);
+      if (latest_id == undefined || statuses[i].StatusId > latest_id)
+        new_statuses.push(statuses[i]);
     for (var i = 0; i < new_statuses.length; i++)
-        $(status_container).prepend(
-            status_template({status: new_statuses[i]})
-        );
-}
+      $(status_container).prepend(status_template({status: new_statuses[i]}));
+  }
 
-/*zapis starijih statusa na dno stranice (pojednostavljeno)*/
-function forceWriteBottom() {
+  /* zapis starijih statusa na dno stranice (pojednostavljeno) */
+  function forceWriteBottom() {
     var oldest_id = getOldestStatusId();
     for (var i = 0; i < statuses.length; i++)
-        if (statuses[i].StatusId < oldest_id)
-            $(status_container).append(
-                status_template({status: statuses[i]})
-            );
-}
+      if (statuses[i].StatusId < oldest_id)
+        $(status_container).append(status_template({status: statuses[i]}));
+  }
 
-/*pri pomicanju stranice ili dolasku novog sadržaja*/
-function OnScrollOrUpdate() {
+  /* pri pomicanju stranice ili dolasku novog sadržaja */
+  function OnScrollOrUpdate() {
     if ($(window).scrollTop() < $(status_container).offset().top)
-        forceWriteTop();
+      forceWriteTop();
     else if ($(window).scrollTop() + $(window).height() >= $(status_container).offset().top + $(status_container).height()) {
-        var oldest_id = getOldestStatusId();
-        getFeed(null, oldest_id, null, forceWriteBottom);
+      var oldest_id = getOldestStatusId();
+      getFeed(null, oldest_id, null, forceWriteBottom);
     }
-}
-/*dohvaćanje statusa (pojednostavljeno)*/
-function getFeed(skip, beforeId, afterId, callback) {
+  }
+
+  /* dohvaćanje statusa (pojednostavljeno) */
+  function getFeed(skip, beforeId, afterId, callback) {
     $.ajax(
     {
-        url: "/api/feed",
-        contentType: "text/json",
-        data: { skip: skip, beforeId: beforeId, afterId: afterId },
-        success: function (data) {
-            $.each(data, function (index) {statuses.push(...);});
-            callback();
-        }
+      url: "/api/feed",
+      contentType: "text/json",
+      data: { skip: skip, beforeId: beforeId, afterId: afterId },
+      success: function (data) {
+        $.each(data, function (index) {statuses.push(...);});
+        callback();
+      }
     });
-}
-/*geolokacija (pojednostavljeno)*/
-function geolocateMe() {
+  }
+
+  /* geolokacija (pojednostavljeno) */
+  function geolocateMe() {
     if (Modernizr.geolocation) {
-        var options = {
-            enableHighAccuracy: true,
-            timeout: 10000,
-            maximumAge: 10000
-        };
-    navigator.geolocation.getCurrentPosition(
-            geolocateMeCallbackSuccess, geolocateMeCallbackError);
+      var options = {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 10000
+      };
+      navigator.geolocation.getCurrentPosition(geolocateMeCallbackSuccess, geolocateMeCallbackError);
     }
-}
-function geolocateMeCallbackSuccess(arg) {
-    wayfarerHub.server.saveGeolocation(
-            arg.coords.longitude, arg.coords.latitude);
-};
+  }
+
+  function geolocateMeCallbackSuccess(arg) {
+    wayfarerHub.server.saveGeolocation(arg.coords.longitude, arg.coords.latitude);
+  };
 </script>
 </body>
 </html>
-
 ```
 
 

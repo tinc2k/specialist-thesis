@@ -1244,10 +1244,218 @@ public class WayfarerHub : Hub
 }
 ```
 
+#### 6.3.4. Klijentska strana: HTML5, LESS i geolokacija ####
+
+Kako bi ubrzali razvoj aplikacije, kao osnovni HTML5 *framework* odabran je Twitter Bootstrap, u trenutku pisanja u ‘nestabilnoj’ inačici 3.0 RC1. Twitter Bootstrap nudi brojne komponente i funkcionalnosti koje ubrzavaju razvoj front-end dijela, kao što su grid sustav, ikone, tipografija, tablice, forme i elementi formi, navigacija, gumbi, straničenje, te JavaScript događaji i tranzicije. Bootstrap također omogućuje brže pisanje responsivnih stranica inherentnom podrškom za mobilne uređaje. Framework dolazi u kompiliranoj (CSS) ili nekompiliranoj (LESS) varijanti, pri čemu je potrebno koristiti LESS kompajler prilikom pokretanja *build* procedure. Korištena verzija LESS kompajlera naziva se dotless, dostupna putem Visual Studio NuGet *package managera*. 
+
+Twitter Bootstrap ne posjeduje vlastiti *templating engine*, pa je u tu svrhu odabran Handlebars.js, kako bi se podaci (konkretno, korisnički statusi) dohvaćeni putem REST servisa grafički oblikovali na klijentskoj strani prije samog prikaza. Sama DOM manipulacija izvodi se uz pomoć biblioteke jQuery, dok otkrivanje mogućnosti preglednika vrši biblioteka Modernizr. U nastavku slijedi prikaz relevantnih Twitter Bootstrap komponenti i JavaScript koda korištenog na glavnoj stranici društvene mreže:
 
 
+```c#
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Home | Wayfarer | Wayfarer</title>
+  <!-- skaliranje na različitim uređajima -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />      
+  <!-- CSS datoteke - u produkciji spojene i minimizirane -->
+  <link href="/Content/bootstrap/bootstrap-glyphicons.css" rel="stylesheet"/>
+  <link href="/Content/bootstrap/bootstrap.css" rel="stylesheet"/>
+  <link href="/Content/site.css" rel="stylesheet"/>
+</head>
 
+<body>
+  <!-- navigacija -->
+  <div class="navbar navbar-fixed-top navbar-inverse">
+    <a class="navbar-brand" href="/">
+    <img src="/Content/images/wayfarer_logo.png" alt="Wayfarer"/></a>
+    <ul class="nav navbar-nav">
+      <li><a href="http://localhost:18260/profiles/tinc2k">Profile</a></li>
+      <li><a href="/Account/Manage">Account</a></li>
+      <li><a href="/Account/Logout">Logout</a></li>
+      <li class="dropdown">
+        <!-- pretraga i kontejner rezultata -->
+        <input type="search" autocomplete="off" name="search" class="form-control" placeholder="Search..." />
+        <ul class="dropdown-menu dropdown-search" role="menu" aria-labelledby="dropdownMenu"></ul>
+      </li>
+    </ul>
+  </div>
 
+  <!-- sadržaj -->
+  <div class="row">
+    <!-- Twitter Bootstrap grid - lijeva kolumna -->
+    <div class="col-6 col-lg-2">
+      <!-- lista prijatelja: -->
+      <ul class="nav nav-pills nav-stacked">
+        <li>...</li>
+      </ul>
+    </div>
+    <!-- Twitter Bootstrap grid - desna kolumna -->
+    <div class="col-12 col-lg-10">
+      <div id="status_post">
+        <!-- forma za unos novog statusa -->
+        <form class="form">
+          <textarea>...<textarea>
+          <button type="submit" class="btn btn-danger btn-lg">Post!</button>
+        </form>
+       </div>
+       <!-- kontejner statusa -->
+       <div id="status_container">
+       </div>
+    </div>
+  </div>
+
+  <!-- Handlebars.js predložak (template) pojedinog statusa -->
+  <script id="status-template" type="text/x-handlebars-template">
+  <blockquote class="status">
+    <strong><a href="{{status.AuthorUrl}}">{{status.AuthorName}}</a>:</strong>
+    <p>{{status.Content}}</p>
+    <small>
+      Posted {{status.TimePosted}}
+      {{#if status.TimeEdited}}
+        and edited {{status.TimeEdited}}.
+      {{else}}
+      {{/if}}
+    </small>
+  </blockquote>
+</script>
+
+<!-- JavaScript biblioteke - u produkciji spojene i minimizirane -->
+<script src="/Scripts/jquery-2.0.0.js"></script>
+<script src="/Scripts/modernizr-2.6.2.js"></script>
+<script src="/Scripts/jquery.signalR-1.0.1.js"></script>
+<script src="/Scripts/bootstrap.js"></script>
+<script src="/Scripts/handlebars.js"></script>
+<script src="/signalr/hubs"></script>
+        
+<script type="text/javascript">
+
+/*globalne varijable*/
+var search_container;
+var status_container
+var search_template;
+var status_template;
+var wayfarerHub = null;
+var statuses = new Array();
+
+/*događaj: učitavanje dokumenta (pojednostavljeno)*/
+$(function () {
+    search_container = $('.dropdown-search');
+    status_container = $('#status_container');
+    /*kompiliranje Handlebars.js predloška*/
+    search_template = Handlebars.compile(
+                                 $("#search-template").html());
+    status_template = Handlebars.compile(
+                                 $("#status-template").html());
+    /*početno učitavanje statusa*/
+    getFeed(null, null, null, forceWriteTop);
+    /*inicijalizacija SignalR WebSockets veze s poslužiteljem*/
+    wayfarerHub = $.connection.wayfarerHub;
+    $.connection.hub.start().done(function () {
+        geolocateMe(); /*započni slanje geolokacije pri uspostavi*/
+        window.setInterval(geolocateMe, 30000);
+    });
+    /*definicija SignalR metoda*/
+    wayfarerHub.client.refreshFeed = function () {
+        var latest_status = getLatestStatusId();
+        getFeed(null, null, latest_status, OnScrollOrUpdate)
+    }
+});
+
+/*događaj: scroll (pojednostavljeno)*/
+$(window).scroll(function () {
+    OnScrollOrUpdate();
+});
+
+/*pretraživanje (pojednostavljeno)*/
+$("input[name='search']").keyup(function (e) {
+    $.ajax(
+    {
+        url: "/api/search",
+        contentType: "text/json",
+        data: { query: value },
+        success: function (data) {
+            /*punjenje memorije dohvaćenim rezultatima*/
+            $.each(data, function (index) {
+                searchData.push(...);
+            });
+            for (var i = 0; i < searchData.length; i++) {
+            /*kompilacija putem predloška i dodavanje u DOM*/
+            $(search_container).append(
+                search_template({ searchItem: searchData[i]})
+            );
+        }
+    });
+});
+
+/*zapis novih statusa na vrh stranice (pojednostavljeno)*/
+function forceWriteTop() {
+    var latest_id = getLatestStatusId();
+    var new_statuses = new Array();
+    for (var i = 0; i < statuses.length; i++)
+        if (latest_id == undefined ||
+            statuses[i].StatusId > latest_id)
+            new_statuses.push(statuses[i]);
+    for (var i = 0; i < new_statuses.length; i++)
+        $(status_container).prepend(
+            status_template({status: new_statuses[i]})
+        );
+}
+
+/*zapis starijih statusa na dno stranice (pojednostavljeno)*/
+function forceWriteBottom() {
+    var oldest_id = getOldestStatusId();
+    for (var i = 0; i < statuses.length; i++)
+        if (statuses[i].StatusId < oldest_id)
+            $(status_container).append(
+                status_template({status: statuses[i]})
+            );
+}
+
+/*pri pomicanju stranice ili dolasku novog sadržaja*/
+function OnScrollOrUpdate() {
+    if ($(window).scrollTop() < $(status_container).offset().top)
+        forceWriteTop();
+    else if ($(window).scrollTop() + $(window).height() >= $(status_container).offset().top + $(status_container).height()) {
+        var oldest_id = getOldestStatusId();
+        getFeed(null, oldest_id, null, forceWriteBottom);
+    }
+}
+/*dohvaćanje statusa (pojednostavljeno)*/
+function getFeed(skip, beforeId, afterId, callback) {
+    $.ajax(
+    {
+        url: "/api/feed",
+        contentType: "text/json",
+        data: { skip: skip, beforeId: beforeId, afterId: afterId },
+        success: function (data) {
+            $.each(data, function (index) {statuses.push(...);});
+            callback();
+        }
+    });
+}
+/*geolokacija (pojednostavljeno)*/
+function geolocateMe() {
+    if (Modernizr.geolocation) {
+        var options = {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 10000
+        };
+    navigator.geolocation.getCurrentPosition(
+            geolocateMeCallbackSuccess, geolocateMeCallbackError);
+    }
+}
+function geolocateMeCallbackSuccess(arg) {
+    wayfarerHub.server.saveGeolocation(
+            arg.coords.longitude, arg.coords.latitude);
+};
+</script>
+</body>
+</html>
+
+```
 
 
 http://github.github.com/github-flavored-markdown/sample_content.html

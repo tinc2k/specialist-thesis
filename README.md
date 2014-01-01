@@ -1070,6 +1070,7 @@ public class UserProfile
   /* veza prema UserProfileRegion entitetima */
   public virtual ICollection<UserProfileRegion> Regions { get; set; }    
 }
+
 public class UserProfileRegion
 {
   [Key]
@@ -1080,14 +1081,68 @@ public class UserProfileRegion
   public string Name { get; set; }
   public string Value { get; set; }
 }
+
 /* kontekst svih entiteta sustava */
 public class WayfarerContext : DbContext
 {
   public WayfarerContext() : base("DefaultConnection") {...}
   public DbSet<UserProfile> UserProfiles { get; set; }
 }
-
 ```
+
+Dependency Injection tehnika omogućuje zamjenu komponenti repozitorija tokom izvršavanja (en. *at runtime*). Takva se funkcionalnost postiže pisanjem sučelja (en. *interface*) koje sadrži sve javne metode repozitorija, te zatim instanciranja odgovarajućeg repozitorija (koji implementira navedeno sučelje) u trenutku instanciranja kontrolera:
+
+```c#
+/* sučelje repozitorija */
+public interface IGeolocationRepository
+{
+  void StoreGeolocation(string ip, decimal longitude, decimal latitude, string username = null);
+}
+
+/* implementacija sučelja */
+public class GeolocationRepository : IGeolocationRepository
+{
+  WayfarerContext _context;
+  public GeolocationRepository()
+  {
+    _context = new WayfarerContext();
+  }
+  public void StoreGeolocation(string ip, decimal longitude, decimal latitude, string username = null)
+  {
+    _context.Geolocations.Add(new Geolocation(){...});
+    _context.SaveChanges();
+  }
+}
+
+/* injekcija repozitorija u kontroleru */
+public class HomeController : Controller
+{
+  private IProfileRepository _repository;
+  private Microsoft.AspNet.SignalR.IHubContext _wayfarerHub;
+  public HomeController(IProfileRepository repository)
+  {
+    this._repository = repository;
+    this._wayfarerHub = Microsoft.AspNet.SignalR.GlobalHost.ConnectionManager.GetHubContext<WayfarerHub>();
+  }
+  public HomeController() : this (new ProfileRepository() ){...}
+  public ActionResult Index() {...}
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 http://github.github.com/github-flavored-markdown/sample_content.html
 https://help.github.com/articles/github-flavored-markdown

@@ -1332,7 +1332,7 @@ Twitter Bootstrap ne posjeduje vlastiti *templating engine*, pa je u tu svrhu od
 <script type="text/javascript">
 
   var search_container;
-  var status_container
+  var status_container;
   var search_template;
   var status_template;
   var wayfarerHub = null;
@@ -1409,7 +1409,8 @@ Twitter Bootstrap ne posjeduje vlastiti *templating engine*, pa je u tu svrhu od
   function OnScrollOrUpdate() {
     if ($(window).scrollTop() < $(status_container).offset().top)
       forceWriteTop();
-    else if ($(window).scrollTop() + $(window).height() >= $(status_container).offset().top + $(status_container).height()) {
+    else if ($(window).scrollTop() + $(window).height() >=
+      $(status_container).offset().top + $(status_container).height()) {
       var oldest_id = getOldestStatusId();
       getFeed(null, oldest_id, null, forceWriteBottom);
     }
@@ -1450,31 +1451,134 @@ Twitter Bootstrap ne posjeduje vlastiti *templating engine*, pa je u tu svrhu od
 ```
 
 
-http://github.github.com/github-flavored-markdown/sample_content.html
-https://help.github.com/articles/github-flavored-markdown
-http://highlightjs.org/static/test.html
-[*]()
-[*]()
-[*]()
-[*]()
-[*]()
-[*]()
+#### 6.3.5. Dostava aplikacije na Windows Azure ####
 
-> “” - **
-> “” - **
-> “” - **
+Windows Azure skup *cloud* usluga je zasigurno najpopularniji izbor hostinga za .NET web aplikacije.  Planiranje poslovnog kontinuiteta, odnosno stabilnosti i replikacije *web* aplikacija i baza podataka na Windows Azure kompleksan je posao koji uključuje brojne izbore, te ćemo za potrebe ovog rada samo napomenuti kako Azure omogućuje upravljanje prometom odnosno preusmjeravanje zahtjeva na određenu instancu kriterijima geografske lokacije, opterećenja i stanja instance, te mnogo varijanti ponovne uspostave usluge od reinstalacije virtualnog stroja i aplikacije do aktivno-pasivnih i aktivno-aktivnih konfiguracija pojedinih instanci aplikacije. 
 
-─
-│
-┌
-┐
-└
-┘
-├
+Sve Azure SQL baze podataka podešene za *high availability* sadrže jednu primarnu i dvije sekundarne replike baze. Sva čitanja i pisanja u bazu podataka izvršavaju se na primarnoj replici te bivaju propagirane na sekundarne replike, međutim sve transakcije zahtjevaju potvrdu većine, odnosno potvrdu primarne i barem jedne sekundarne replike prije odluke o uspješnosti transakcije. U slučaju pada primarne replike, vanjski arbitrar određuje jednu od sekundarnih replika kao novu primarnu repliku kriterijem manjeg opterećenja poslužitelja na kojem se replika nalazi. U slučaju pada sekundarne replike, kriterij uspješnosti transakcije raste, odnosno zahtjeva potvrdu primarne i opstale sekundarne replike za potvrdu transakcije. Vanjski arbitrar određuje stupanj kvara replike te odlučuje da li je repliku moguće popraviti (softverski update, *restart* i slično) ili je potrebno stvoriti novu repliku i kopirati sadržaj baze podataka sa primarne replike. Velikom povezanošću i međusobnim kontrolama, svaki Azure datacentar može izgubiti do 15% svih poslužitelja i zadržati razinu usluge iznad one određene korisničkim ugovorima.
 
-┤
-┬
+Dostava (en. *deployment*) aplikacije i baze podataka na Windows Azure iz Visual Studio 2012 razvojne okoline iznimno je jednostavan zahvaljujući dostupnosti dostavne konfiguracijske datoteke za odgovarajuće Web Site i Database instance prilikom korištenja Azure web sjedišta. Slijedi primjer navedene konfiguracijske datoteke:
 
-┴
 
-┼
+```xml
+<publishData>
+  <publishProfile profileName="Tin Crnković – Wayfarer Deployment"
+    publishMethod="MSDeploy"     
+    publishUrl="wayfarer.publish.azurewebsites.windows.net:443" 
+    msdeploySite="tin.crnkovic" userName="$tin.crnkovic" 
+    userPWD="password" destinationAppUrl="http://wayfarer.io"
+    SQLServerDBConnectionString="
+      Data Source=tcp:wayfarer.database.windows.net,1433;
+      Initial Catalog=wayfarerDb;
+      User ID=tin.crnkovick@wayfarer; Password=password"
+    controlPanelLink="http://windows.azure.com" 
+    targetDatabaseEngineType="sqlazuredatabase" 
+    targetServerVersion="Version100">
+    <databases>
+      <add name="wayfarerDb"
+        connectionString="
+            Data Source=tcp:wayfarer.database.windows.net,1433;
+            Initial Catalog=wayfarerDb;
+            User ID=tin.crnkovic@wayfarer; Password=password"  
+          providerName="System.Data.SqlClient"
+          targetDatabaseEngineType="sqlazuredatabase" 
+          targetServerVersion="Version100"/>
+    </databases>
+  </publishProfile>
+</publishData>
+```
+
+### 6.4. Izrada aplikacije tradicionalnim pristupom ###
+
+U ovome pod-poglavlju pojašnjen je postupak izrade web aplikacije istih zahtjeva koristeći tradicionalne tehnologije i alate izrade web aplikacija. Zbog vremenskih limitacija navedena aplikacija nije implementirana, pa je tako cilj ovog pod-poglavlja definiranje konkretnih tradicionalnih tehnologija i pojašnjenje pojedinih koraka izgradnje u dovoljnoj mjeri za kasniju usporedbu.
+
+Najpopulariji programski jezik specijaliziran za pisanje poslovnog sloja web aplikacija je PHP, koji usprkos kritikama [*](http://me.veekun.com/blog/2012/04/09/php-a-fractal-of-bad-design/)[*](http://www.codinghorror.com/blog/2008/05/php-sucks-but-it-doesnt-matter.html ), i dalje bilježi rast popularnosti[*](http://www.tiobe.com/index.php/content/paperinfo/tpci/index.html). Prema kriteriju popularnosti odabran je i sustav za upravljanje relacijskim bazama podataka MySQL[*](http://db-engines.com/en/ranking), te jQuery[*](http://w3techs.com/technologies/overview/javascript_library/all) JavaScript biblioteka. Ostale tehnologije klijentske strane odabrane su kriterijem stabilnosti: [HTML 4.01](http://www.w3.org/TR/REC-html40/), te [CSS 2.1](http://www.w3.org/TR/CSS2/). 
+
+Izrada podatkovnog sloja započinje stvaranjem relacija, veza i indeksa baze podataka koristeći DDL – Data Definition Language. Korištenjem biblioteke PDO (PHP Data Objects) omogućuje se pristup bazi podataka putem ujedinjenog sučelja. Pri tome se koriste VO (Value Object) objekti kao objektne reprezentacije n-torki baze podataka, te DAO (Data Access Object) objekti koji enkapsuliraju specifičnosti pojedinih vrsta entiteta u smislu pristupa, unosa, brisanja i izmjena podataka. Takvim pristupom izgradnji zadovoljen je uvjet relativne univerzalnosti pristupa podacima, odnosno neovisnosti entiteta podatkovnog sloja o konkretnoj implementaciji sustava za upravljanje bazama podataka.
+
+S ciljem zadovoljavanja korisničkog zahtjeva jasnih URL ruta (na primjer, http://www. domena.com/korisnik/ime.prezime) potrebno je implementirati sustav za upravljanje URL rutama. Podrazumijevani način upravljanja rutama za PHP aplikacije jest kontroler stranica (en. *page controller*), čije rute ovise o relativnim putanjama resursa unutar datotečnog sustava, u odnosu na korijenski direktorij web aplikacije. Budući da navedeni pristup ne zadovoljava gorenavedeni korisnički zahtjev, potrebno je promijeniti konfiguraciju poslužitelja na način da pojedine HTTP/S zahtjeve preusmjerava na specijalizirani kontroler koji će zatim ovisno o pojedinostima zahtjeva pronaći odgovarajuće preusmjerenje. Navedeni sustav tako omogućuje pisanje specifičnih URL putanja za određeni kontroler ili akciju kontrolera – uključujući specifičnosti dodatnih GET parametara, te pružanje putanja za statički sadržaj poput CSS, JavaScript i multimedijskih datoteka.
+
+Implementacija sustava za upravljanje korisnicima sastoji se od velikog broja pod-zadataka: sigurna pohrana i provjera korisničkih podataka, sustav za prijavu i održavanje korisničke sesije do trenutka odjave, registracija novih korisnika, rješavanje problema gubitka lozinke, te interakcija sa vanjskim sustavima za upravljanje identitetima (Facebook, Google). PHP posjeduje vlastite kriptografski dostatne metode[*](http://www.php.net/manual/en/function.openssl-random-pseudo-bytes.php) za generiranje nasumičnih brojeva, implementaciju popularnih *hash* funkcija[*](http://php.net/manual/en/function.sha1.php) i podsustav za upravljanje korisničkim sesijama.  Uvođenje mogućnosti interakcije sa Facebook sustavom za autentikaciju zahtjeva instalaciju i podešavanje Facebook SDK for PHP[*(https://developers.facebook.com/docs/php/gettingstarted/#install)], dok uvođenje mogućnosti prijave koristeći Google korisnički račun zahtjeva uvođenje OAuth2 biblioteke[*](https://github.com/fkooman/php-oauth-client) koja posjeduje i specijalizirane metode komunikacije sa Google sustavom za autorizaciju. Uz navedene zadatke klijentske strane, potrebno je i izraditi poglede pojedinih stranica (prijava, odjava, registracija, gubitak lozinke), te izvršiti detaljno testiranje i sigurnosne provjere.
+
+Prilikom otvaranja glavne stranice koja sadrži korisničke statuse svih prijatelja, inicijalni će statusi biti učitani prilikom prvog zahtjeva – odnosno generirani skupa sa ostatkom stranice i isporučeni klijentu. Uzastopnim AJAX zahtjevima postavljaju se zahtjevi za novim sadržajem, pri čemu svaki zahtjev uključuje identifikator najnovijeg prikazanog statusa. Poslužitelj pri primanju takvog zahtjeva vrši upit prema bazi podataka, te u slučaju pojave novijih statusa korisnikovih prijatelja generira HTML sa navedenim statusima koji vraća zahtjevom. Po primanju statusa, DOM manipulacijom ih se umeće na vrh stranice. Ukoliko korisnik dosegne dno stranice, korištenjem jQuery biblioteke uputiti će se AJAX zahtjev za korisničkim statusima starijim od najstarijeg prikazanog. Po primanju zahtjeva, poslužitelj vrši upit prema bazi, te analogno slučaju pronalaska novijih statusa, generira HTML u koji je umetnut sadržaj te ga isporučuje klijentu odgovorom na AJAX zahtjev. Istovrsnom DOM manipulacijom stariji se sadržaj dohvaća na događaj dolaska prozora preglednika blizu dna stranice, te umeće u DOM strukturu stranice.
+
+Stranice pojedinih korisničkih profila – koje sadrže sve segmente profile i statuse određenog korisnika dostupne posjetitelju koriste programsku logiku ekvivalentnu gore opisanoj logici početne stranice. Pretraga korisnika također koristi AJAX zahtjeve prema poslužitelju, pri čemu se na poslužitelju rezultati pretraživanja kombiniraju u HTML predložak koji se zatim isporučuje klijentu, te DOM manipulacijom umeće u HTML strukturu aplikacije.
+
+Funkcionalnost geolokacije, odnosno preuzimanja geografske lokacije korisnika prilikom korištenja web aplikacije nije moguće izravno reproducirati – budući da je Geolocation API moderna tehnologija čiji nacrt standarda u trenutku pisanja rada nije dosegao razinu preporuke W3C standardizacijskog tijela. Alternativni, značajno manje precizan pristup jest korištenje nekog od javnih REST servisa koji na temelju IP adrese zahtjeva nastoje odrediti geografsku lokaciju klijenta, te odgovoriti na zahtjev približnom geografskom širinom i dužinom. Određivanje države posjetitelja na temelju IP adrese načelno je vrlo precizno (>95%), dok određivanje točnog grada ovisno o usluzi i lokaciji varira između 50 i 80 posto.[*](http://private.dnsstuff.com/info/geolocation.htm)
+
+Implementacija klijentske strane uključuje kodiranje stila prikaza koristeći HTML i CSS, odnosno napisati sljedeće elemente: fluidno pozicioniranje glavnih vizualnih elemenata stranice (zaglavlje, bočni izbornik, sadržaj, podnožje), stiliziranje i mehanika glavnog izbornika i pod-izbornika, stiliziranje bočnog izbornika, tipografija aplikacije, stiliziranje korisničkog profila i liste statusa te stiliziranje elemenata formi.
+
+
+## 7. Usporedba pristupa u izradi web aplikacije ##
+
+S ciljem usporedbe izrade koristeći moderne, te koristeći tradicionalne alate i tehnologije potrebno je definirati relevantne kriterije na temelju kojih će usporedbe prikazati praktične prednosti i nedostatke dvaju različitih pristupa. Usprkos postojanju različitih interesnih skupina web aplikacije: korisnika, nositelja poslovnog rizika, dizajnera interakcija, programskih inženjera i brojnih drugih, ovaj rad prezentirati će isključivo kriterije važne iz perspektive programskih inženjera uključenih u procese implementacije. Uzevši u obzir glavnu i pomoćne hipoteze navedene u uvodu ovog rada, ustanovljeni su sljedeći glavni kriteriji usporedbe: 
+
+ - vremensko trajanje implementacije korisničkih zahtjeva
+ - broj i mjera ispunjenosti korisničkih zahtjeva uporabom alata ili tehnologije
+ - jednostavnost uvođenja funkcionalnih izmjena
+ - jednostavnost uvođenja izmjena grafičkog sučelja
+
+U nastavku slijede različite aktivnosti implementacije web aplikacije prema korisničkim zahtjevima definiranim u prethodnom poglavlju, te usporedba razvoja modernim i tradicionalnim alatima i tehnologijama prema kriterijima relevantnim za određenu aktivnost.
+
+Izrada baze podataka i objektno-relacijskog sloja većinski su automatizirane modernim pristupom koji omogućuje generiranje baze podataka na temelju deklaracija prisutnih u objektno-relacijskom sloju. Navedena funkcionalnost podržana je uz pomoć Entity Framework Code First pristupa na .NET platformi, a ekvivalentne tehnologije dostupne su i u Django[*](https://docs.djangoproject.com/en/dev/topics/db/models/), te Ruby on Rails[*](http://guides.rubyonrails.org/active_record_basics.html) razvojnim platformama. Pisanje upita olakšano je uvođenjem izvorno-agnostičkih upitnih jezika (LINQ[*](http://msdn.microsoft.com/en-us/library/bb308959.aspx) na .NET platformi) čime se što smanjuje vrijeme razvoja i olakšava migracija na druge sustave za upravljanje relacijskim bazama podataka. Budući da navedene funkcionalnosti nisu implementirane u tradicionalnim alatima, prednost modernog pristupa je veća brzina razvoja – odnosno kraće vremensko trajanje implementacije, te brže uvođenje funkcionalnih izmjena ukoliko iste uključuju izmjene podatkovne strukture ili načina manipulacije podacima web aplikacije.
+
+Uvođenje novih arhitekturalnih paradigmi poput injekcije zavisnosti (en. *dependency injection*) omogućuje se programiranje određenog sloja prema zahtjevima postavljenog sučelja (en. *against an interface*). Takvim pristupom, povećava se modularnost web aplikacije što čini zamjenu ili nadogradnju određenog sloja jednostavnijom, te omogućuje učitavanje ili zamjenu komponente tokom samog izvršavanja aplikacije.
+
+Tradicionalnim tehnologijama, postizanje *real-time web* funkcionalnosti poput dodavanja novog korisničkog statusa u *web* preglednik gledatelja u trenutku njegovog nastanka moguće je tek prividno, odnosno uzastopnim slanjem AJAX zahtjeva za novim sadržajem u pravilnim vremenskim razmacima. Smanjenjem trajanja razmaka između uzastopnih zahtjeva povećava se responzivnost aplikacije, ali drastično raste i opterećenje poslužitelja ‘nepotrebnim’ upitima nad bazom podataka. Ilustrirano na jednostavnom primjeru, ukoliko korisnik promatra statuse 100 drugih korisnika na društvenoj mreži (ima 100 prijatelja), te svaki promatrani korisnik u prosjeku objavi 2 statusa u 24 sata, uz pretpostavku jednolike vremenske raspodjele statusa, korisnik će moći pročitati približno 8 novih statusa u jednom satu korištenja aplikacije. Ukoliko je vremenski razmak između uzastopnik AJAX zahtjeva 30 sekundi, poslužitelj će u istom periodu izvršiti 120 upita prema bazi podataka, iako će u samo 8 slučajeva postojati novi sadržaj.
+
+Uvođenje *real-time web* functionalnosti olakšano je bibliotekama koje podržavaju takve principe upravljanja podacima i porukama (SignalR na .NET platformi), čime se eliminira problem suvišnih upita, te povećava responzivnost aplikacije, budući da će novi sadržaj uvijek biti dostupan u samom trenutku nastanka, bez kašnjenja uzrokovanog vremenskim razmakom između nastanka i sljedećeg uzastopnog AJAX upita.
+
+Upravljanje URL rutama *web* aplikacije pojednostavljeno je upotrebom modernih *frameworka* koji implementiraju konvencije za pisanje ruta i omogućuju nezavisnu konfiguraciju za pojedine kontrolere, metode kontrolera i načine pristupa. Tradicionalni sustavi za istu su namjenu koristili regularne izraze (en. *regular expressions*) najčešće bez određene konvencije, što je otežavalo razumijevanje namjere programskog koda i negativno utjecalo na brzinu razvoja *web* aplikacije.
+
+Upravljanje korisnicima i ulogama korisnika (en. *roles*) značajno je olakšano upotrebom modernih frameworka. Upotrebom [DotNetOpenAuth](https://www.nuget.org/packages/DotNetOpenAuth) biblioteka na .NET platformi se omogućuje upravljanje Windows, Windows Live, te Google, Facebook i ostalim OAuth2 identitetima, pružajući tako jedinstveno sučelje za upravljanje korisnicima, korisničkim sesijama i ulogama. Prednost takvog pristupa je smanjenje vremena razvoja aplikacije, te povećana sigurnost korištenjem provjerenih biblioteka.
+
+Upravljanje programskim paketima web aplikacije olakšano je upotrebom modernih alata za upravljanje paketima (NuGet na .NET platformi) koji pružaju centralni repozitorij svih paketa potrebnih pojedinim web aplikacijama. Na taj se način omogućuje brža pretraga i jedinstveno mjesto dohvata svih potrebnih paketa, čime se ubrzava proces razvoja web aplikacije.
+
+Moderne biblioteke za pisanje predložaka klijentske strane omogućuju bolju separaciju dizajna od sadržaja, rasterećenje poslužitelja i smanjenje mrežnog prometa. Tradicionalno, klijentski kod nije sadržavao entitete koje stranica prikazuje, što je promijenjeno pojavom *frameworka* za vezivanje podataka (AngularJS, Backbone.js, Ember.js, KnockoutJS), i biblioteka za upravljanje klijentskim predlošcima (moustache.js, dust.js). Prednosti takvog pristupa su smanjenje mrežnog prometa i opterećenja poslužitelja budući da se dizajn pogleda generira na klijentskoj strani. Nedostatak takvog pristupa je mnogo veća kompleksnost koda klijentske strane, a povremeno i duži vremenski period implementacije.
+
+Izmjene koje donosi HTML5 skupina standarda moguće je u osnovi podijeliti na semantičke i funkcionalne. Dok semantičke izmjene ne čine veliku razliku prema ranije navedenim kriterijima, nove funkcionalne mogućnosti poput geolokacije, klijentske pohrane i *offline* dostupnosti uvode mogućnosti koje jednostavno nisu bile dostupne korištenjem tradicionalnih alata i tehnologija. U takvim je slučajevima korištenje modernih tehnologija neizbježan korak u ostvarivanju korisničkih zahtjeva.
+
+Novi stilski jezici (korišteni LESS, te popularniji Sass) pružaju mnogo fleksibilniji način pisanja stilskih značajki zahvaljujući jezičnim konstruktima poput varijabli, korisnički-definiranih pravila (en. *mixins*), ugnježđivanja i naslijeđivanja, te matematičkih operacija nad bojama. Zbog navedenih mogućnosti – osobito varijabli i korisnički-definiranih pravila, drastično se smanjuje trajanje uvođenja promjena grafičkog sučelja, budući da nije potrebno tražiti individualne izmjene nad elementima, klasama i identifikatorima. Budući da su oba jezika nadskupovi mogućnosti tradicionalnog CSS-a, nisu potrebne nikakve izmjene za korištenje već implementiranih CSS datoteka zajedno s LESS/Sass datotekama.
+
+Korištenje *front-end* frameworka (u ovom radu Twitter Bootstrap) skraćuje vrijeme razvoja klijentskog sloja zahvaljujući brojnim ugrađenim funkcionalnostima kompatibilnima sa svim popularnim web preglednicima. Pozicioniranje elemenata unutar fluidne mreže omogućuje prilagodbu različitim veličinama ekrana, pa je tako prilagodba različitim uređajima drastično ubrzana. Ugrađeni dizajn elementi uključuju osnovne boje i tipografiju, tablice, gumbe, i različite elemente web formi, te brojne komponente poput izbornika i brojnih drugih vizualnih elemenata. Twitter Bootstrap dolazi sa vlastitom LESS datotekom, pa su tako svi elementi u potpunosti izmjenjivi, sa svim prednostima koje LESS nudi nad tradicionalnim CSS stilskim datotekama.
+
+Promatrajući pojedine aktivnosti izgradnje *web* aplikacije utvrđeno je kako je najveća prednost korištenja modernih tehnologija i alata postignuta prema kriteriju vremenskog trajanja implementacije i to u aktivnostima izrade baze podataka i objektno-relacijskog sloja, upravljanja URL rutama, upravljanja programskim paketima, te upravljanja korisnicima. Aktivnosti uvođenja *real-time web* funkcionalnosti, te upravljanja URL rutama i korisnicima ukazuju na veću mjeru ispunjenosti korisničkih zahtjeva samim korištenjem modernih tehnologija, dok moderne arhitekture, jezici, i biblioteke ukazuju na povećanu jednostavnost uvođenja funkcionalnih izmjena, te izmjena grafičkog sučelja. Usprkos manjim nedostatcima koje pojedine aktivnosti uvode, utvrđeno je kako korištenje modernih alata i tehnologija većinski donosi prednosti prema svim ranije ustanovljenim kriterijima.
+
+
+
+## 8. Zaključak ##
+
+Rast kvantitete i tehnološke raznolikosti umreženih uređaja, te rastuće potrebe korisnika uvelike mijenjaju funkcionalne i tehničke kriterije koje moderna web aplikacija mora zadovoljiti. Iz navedenih razloga, nove tehnologije i alati ne rješavaju samo ranije poznate probleme već uvode i nove funkcionalnosti poput geolokacije i interakcije sa vanjskim uslugama. 
+
+U podatkovnom sloju najznačajnije su promjene mogućnost automatizacije stvaranja baze podataka ili objektno-relacijskog sloja, te odmicanje od isključivo relacijskih baza podataka, raslojavanjem podataka na strukturirane, nestrukturirane i slabo strukturirane. 
+Mogućnosti modernih web *frameworka* kao što su objektno-relacijsko preslikavanje, agnostični upitni jezici, upravljanje rutama, parsiranje predložaka, upravljanje paketima i brojne druge stvaraju isključivo prednost u smislu lakoće i brzine izrade *web* aplikacije. Također je važno istaknuti jednostavnost pisanja REST servisa koji uvelike zamjenjuju njihove SOAP ekvivalente, te jednostavnost uvođenja *real-time web* funkcionalnosti koja će vjerojatno u nadolazećim godinama u potpunosti zamijeniti AJAX model komunikacije. 
+
+Razvoj klijentskih JavaScript biblioteka i razvojnih alata u iznimnom je porastu, a pojava poslužiteljskih JavaScript frameworka i biblioteka otvara po prvi put mogućnost razvoja *web* aplikacije u jednom programskom jeziku na poslužiteljskoj i klijentskoj strani. Značajna je i pojava novih stilskih i skriptnih jezika, odnosno prva raslojavanja jezika klijentske strane. HTML5 i povezani standardi predstavljaju veliki potencijal za *web* aplikacije, međutim mogućnosti primjene još su uvijek ograničene implementacijama u trenutno dostupnim *web* preglednicima.
+
+U svakom pojedinom sloju web aplikacije, kroz rad su prikazane različite tehnologije i alati koji rješavaju istovrsne probleme ili pružaju istovrsnu funkcionalnost, pa tako možemo reći kako se otvorenost Interneta kao platforme iscrtava i putem alata i tehnologija koje ga stvaraju, neovisno o jezicima, proizvođačima i cijeni.
+
+
+
+## Popis literature ##
+
+1.  Freeman et. al., Head First Design Patterns, O'Reilly Media, digitalno izdanje, 2004.
+2.  Sørensen E., Mihailesc Marius I., MVVM Design Pattern using WPF, Faculty of Science and Information Technology, Titu Maiorescu University, 2010. 
+3.  Casonato et al., Top 10 Technology Trends Impacting Information Infrastructure, Gartner, 2013.
+4.  Gordon et. al., Gartner Worldwide IT Spending Forecast 2Q12, Gartner 2012.
+5.  Schneier, B., Risks of Cloud Computing, Schneier on Security, digitalno izdanje, 2013.
+6.  Armbrust et al., A View of Cloud Computing, Communications of the ACM, Vol. 53 No. 4, 2010.
+7.  Rodrigues, T., 11 cloud IaaS providers compared, TechRepublic, 2013.
+8.  Sadalage P. J., Fowler, M., NoSQL Distilled: A Brief Guide to the Emerging World of Polyglot Persistence, Addison-Wesley, digitalno izdanje, 2012.
+9.  O’Neil et al., The Star Schema Benchmark and Augmented Fact Table Indexing, TPC Technology Conference, 2009.
+10. Buerli, M., The Current State of Graph Databases, California Polytechnic State University, 2012.
+11. Griffiths, I., Programming C# 5.0, O'Reilly Media, digitalno izdanje, 2013.
+12. Troelsen, A., Pro C# 5.0 and .NET 4.5 Framework, Apress, digitalno izdanje, 2012.
+13. Galloway et. al., Professional ASP.NET MVC 4, Wiley Publishing, digitalno izdanje, 2012.
+14. Esposito, D., Cutting Edge: Long Polling and SignalR, MSDN Magazine, digitalno izdanje, 2012. 
+15. Osmani, A., Learning JavaScript Design Patterns, O'Reilly Media, digitalno izdanje, 2012.
+16. Joshi, B., HTML5 Programming for ASP.NET Developers, Apress, digitalno izdanje, 2012.
+17. Freeman, A., The Definitive Guide to HTML5, Apress, digitalno izdanje, 2011.
+18. Frain, B., Responsive Web Design with HTML5 and CSS3, Packt Publishing, digitalno izdanje, 2012.
+19. Hickson, I., WHAT open mailing list announcement, Web Hypertext Application Technology Working Group, 2004.
+20. Sommerville, I., Software engineering, 8th ed, Addison Wesley, 2007.
+21. Atwood, J., Effective Programming: More Than Writing Code, Coding Horror, digitalno izdanje, 2012.

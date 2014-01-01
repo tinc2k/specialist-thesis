@@ -1030,8 +1030,64 @@ Microsoft Team Foundation Service pruža cjelokupno rješenje za vođenje projek
  - integracija sa Windows Live identitetima
  - integracija sa Microsoft PowerPoint za storyboarding funkcionalnost
 
+Visual Studio 2012 omogućuje upravljanje paketima koristeći NuGet. Korištenjem Package Manager konzole moguće je instalirati potrebne projekte u Visual Studio ASP.NET MVC projekt:
 
+```
+PM> Install-Package jQuery
+Successfully installed ‘jQuery 1.9.1’.
+Successfully added ‘jQuery 1.9.1’ to Wayfarer.Samples.
 
+PM> Install-Package Modernizr
+Successfully installed ‘Modernizr 2.6.2’.
+Successfully added ‘Modernizr 2.6.2’ to Wayfarer.Samples.
+```
+
+Odabirom *Solution* – *Add Solution to Source Control* u Visual Studio razvojnoj okolini dodaje se rješenje sa svim pripadajućim datotekama i konfiguracijom paketa na Team Foundation Server. Sljedeći paket koji dodajemo je Dotless, LESS predprocesor za .NET uključen u NuGet Package Manager. Podrazumijevani način rada dotless-a jest kompiliranje LESS izvorne datoteke na poslužiteljskoj strani na klijentski zahtjev, te isporuka rezultirajuće CSS datoteke. Autor ovog rada preferira kompiliranje jednom, odnosno dodavanje naredbi za kompilaciju u *Pre-build events* projekta: 
+
+```
+del “$(ProjectDir)Content\style.css”
+“$(SolutionDir)packages\dotless.1.3.1.0\tool\dotless.compiler.exe” –m “$(ProjectDir)Content\style.less” “$(ProjectDir)Content\style.css”
+```
+
+Nova verzija Microsoft Visual Studio razvojne okoline u pravilu dolazi na tržište svake tri do četiri godine, što prestavlja vrlo značajan vremenski period u svijetu *web* aplikacija. Iz tog razloga, Microsoft objavljuje ASP.NET and Web Tools set dodataka kojima nastoje pratiti sve novitete na području *web* aplikacija. Posljednja verzija, odnosno verzija 2012.2 uključuje novu verziju tehnologija ASP.NET Web Forms i ASP.NET MVC, te omogućuje pisanje REST servisa baziranih na ASP.NET Web API tehnologiji. Web Tools 2012.2 također uključuje SignalR – novu Microsoftovu biblioteku za real-time web komunikaciju, te naglašavanje sintakse (en. *syntax highlighting*) za TypeScript i LESS datoteke. 
+
+#### 6.3.2. Podatkovni sloj: entiteti, baza podataka i repozitoriji ####
+
+Upotrebom Entity Framework *code-first* pristupa moguće je definirati entitete i njihove veze kao C# klase, te potom generirati bazu podataka koristeći Code First Migrations. Slijedi prikaz dvaju izrađenih i povezanih entiteta te konteksta putem kojeg se omogućuje korištenje:
+
+```c#
+[Table("UserProfile")]
+public class UserProfile
+{
+  /* opisni atributi (anotacije) primarnog ključa */    
+  [Key]
+  [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
+  public int UserId { get; set; }
+  public string UserName { get; set; }
+  public string Email { get; set; }
+  public string Phone { get; set; }
+  public bool Disabled { get; set; }
+  /* veza prema UserProfileRegion entitetima */
+  public virtual ICollection<UserProfileRegion> Regions { get; set; }    
+}
+public class UserProfileRegion
+{
+  [Key]
+  [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
+  public int UserProfileRegionId { get; set; }
+  public UserProfile User { get; set; } 
+  public Audience Audience { get; set; }
+  public string Name { get; set; }
+  public string Value { get; set; }
+}
+/* kontekst svih entiteta sustava */
+public class WayfarerContext : DbContext
+{
+  public WayfarerContext() : base("DefaultConnection") {...}
+  public DbSet<UserProfile> UserProfiles { get; set; }
+}
+
+```
 
 http://github.github.com/github-flavored-markdown/sample_content.html
 https://help.github.com/articles/github-flavored-markdown

@@ -1161,10 +1161,88 @@ public List<Status> GetFeed(string requestor, int? skip = null, int? beforeId = 
 }
 ```
 
+#### 6.3.3. Kontroleri, WebAPI servisi i SignalR ####
 
+ASP.NET MVC tradicionalni kontroleri instanciraju se prilikom HTTP(S) zahtjeva. Uobičajeno, oni instanciraju repozitorij koji provodi manipulaciju podataka i dostavlja rezultate obrade u repozitorij. Dohvaćenim podacima manipulira se na način da se stvara ViewModel ili prenose u ViewBag, te se potom tokom parsiranja pogleda integriraju u pogled koji biva dostavljen korisniku. Uz tradicionalne kontrolere, aplikacija koristi i WebAPI, te SignalR kontrolere. WebAPI je ASP.NET framework namijenjen pisanju REST HTTP servisa, koji će se koristiti za dohvat korisničkih statusa prilikom pregleda početne stranice (*global feed*) ili pojedinog korisničkog profila. SignalR je biblioteka namijenjena implementaciji *real-time web* funkcionalnosti ASP.NET u aplikacijama, te je uovom radu korištena za implementaciju obavijesti o stvaranju novog sadržaja kako bi isti pravovremeno bio dohvaćen koristeći skripte klijentske strane i REST servise poslužiteljske strane. U nastavku slijedi prikaz korištenih tradicionalnih, WebAPI i SignalR kontrolera:
 
+```c#
+/* tradicionalni ASP.NET MVC kontroler */
+public class ProfilesController : Controller
+{
+  private IProfileRepository _repository;
 
+  public ProfilesController(IProfileRepository repository)
+  {
+    this._repository = repository;
+  }
 
+  public ProfilesController() : this (new ProfileRepository()){...}
+
+  [Authorize]
+  public ActionResult Index(string id)
+  {
+    var profile = _repository.GetProfileByUsername(id);
+    var regions = _repository.GetRegions(id, User.Identity.Name); 
+    ViewBag.Profile = profile;
+    ViewBag.Regions = regions;
+    return View();
+  }
+}
+
+/* WebAPI kontroler */
+public class FeedController : ApiController
+{
+  private IProfileRepository _repository;
+
+  public FeedController(IProfileRepository repository)
+  {
+    this._repository = repository;
+  }
+
+  public FeedController() : this (new ProfileRepository()){...}
+
+  public IEnumerable<FeedItem> Get(string username, int? skip = null, int? beforeId = null, int? afterId = null)
+  {
+    var results = new List<FeedItem>();
+    if (User.Identity.IsAuthenticated)
+    {
+      var feed = _repository.GetUserStatuses(username, User.Identity.Name, skip, beforeId, afterId);
+      results = GetFeedViewModel(feed, _repository);
+    }
+    return results;
+  }
+}
+
+/* SignalR kontroler*/
+public class WayfarerHub : Hub
+{
+  private IProfileRepository _profileRepo;
+  private IGeolocationRepository _geolocRepo;
+  private ISearchRepository _searchRepo;
+
+  public WayfarerHub(IProfileRepository profileRepo, IGeolocationRepository geolocRepo, ISearchRepository searchRepo)
+  {
+    this._profileRepo = profileRepo;
+    this._geolocRepo = geolocRepo;
+    this._searchRepo = searchRepo;
+  }
+
+  public WayfarerHub() : this (new ProfileRepository(), new GeolocationRepository(), new SearchRepository() ){...}
+
+  public override Task OnConnected()
+  {
+    SubscribeToFriendEvents();
+    return base.OnDisconnected();
+  }
+
+  public bool SaveGeolocation(decimal longitude, decimal latitude)
+  {
+    var ip = HttpContext.Current.Request.UserHostAddress;
+    var user = Context.User.Identity.IsAuthenticated ? Context.User.Identity.Name : null;
+    return _geolocRepo.StoreGeolocation(ip, longitude, latitude, user);
+  }
+}
+```
 
 
 

@@ -906,6 +906,7 @@ Na temelju funkcionalnih korisničkih zahtjeva moguće je odrediti temeljne enti
 │ Latitude    │        │ Disabled     │      │ TimePosted     │
 └─────────────┘        └──────────────┘      │ TimeLastEdited │
                                              └────────────────┘
+                Slika 1: Dijagram Entiteti-veze društvene mreže
 ```
 
 Sljedeći korak oblikovanja sustava jest izrada *wireframea*, odnosno prikaza kostura web aplikacije koji uključuje sadržaj, navigacijske elemente i općenito interakcijske elemente sučelja. *Wireframe* ne sadrži tipografiju, boje niti grafiku, budući da je njegova namjena prikaz funkcionalnosti i prioriteta pojedinog sadržaja.
@@ -913,48 +914,123 @@ Sljedeći korak oblikovanja sustava jest izrada *wireframea*, odnosno prikaza ko
 Prvi ekran prikazuje prijavu korisnika putem korisničkog imena i lozinke specifične za web aplikaciju koju stvaramo, ili mogućnost prijave putem postojećih Facebook ili Google korisničkih računa. Ekran prijave sadrži i prečac na stranicu za registraciju novih korisnika.
 
 ```
-┌──────────────────────────────────────────────────────────┐ 
-│  LOGIN                                                   │ 
-│                                                          │ 
-│ ┌──────────────┐                                         │ 
-│ │ Username     │                                         │ 
-│ └──────────────┘                                         │ 
-│ ┌──────────────┐                                         │ 
-│ │ Password     │                                         │ 
-│ └──────────────┘                                         │ 
-│ ┌───────┐                                                │ 
-│ │ Login │                                                │ 
-│ └───────┘                                                │ 
-│                                                          │ 
-│ User another service:                                    │ 
-│ Facebook | Google                                        │ 
-│                                                          │ 
-│ Register if you don't have an account                    │ 
-└──────────────────────────────────────────────────────────┘
+┌───────────────────────────────────────────────────────────────┐ 
+│  LOGIN                                                        │ 
+│                                                               │ 
+│ ┌──────────────┐                                              │ 
+│ │ Username     │                                              │ 
+│ └──────────────┘                                              │ 
+│ ┌──────────────┐                                              │ 
+│ │ Password     │                                              │ 
+│ └──────────────┘                                              │ 
+│ ┌───────┐                                                     │ 
+│ │ Login │                                                     │ 
+│ └───────┘                                                     │ 
+│                                                               │ 
+│ User another service:                                         │ 
+│ Facebook | Google                                             │ 
+│                                                               │ 
+│ Register if you don't have an account                         │ 
+└───────────────────────────────────────────────────────────────┘
+         Slika 2: Dijagram za prijavu korisnika u društvenu mrežu
 ```
 
 Sljedeći ekran prikazuje početnu stranicu nakon prijave. Na vrhu se nalazi glavni izbornik, koji omogućuje navigaciju na početnu stranicu, stranicu vlastitog profila, stranicu postavki te pretraživanje korisnika. Lijeva kolumna prikazuje listu korisnikovih prijatelja putem koje je moguće posjetiti pojedine korisničke profile. Na desnoj strani nalazi se forma za unos novog korisničkog statusa, te potom novi korisnički statusi korisnika dodanih na listu prijatelja. Ukoliko se korisnik nalazi na vrsti liste, prilikom pojave novog sadržaja (odnosno, kada netko sa liste prijatelja napiše novi status), novi će status prilikom nastanka biti dodan na početnu stranicu svih njegovih *online* prijatelja. Listanje statusa vrši se ‘beskonačno’, odnosno pomicanjem stranice prema dolje upiti se nastavljaju sve dok postoje kronološki stariji statusi prijatelja, odnosno dok postoji sadržaj koji je moguće učitati. 
 
 ```
-┌──────────────────────────────────────────────────────────┐ 
-│  feed | profile | settings                               │ 
-├──────────────────────────────────────────────────────────┤
-│ Feed                                                     │ 
-│                                                          │ 
-│ Friends:       │  ┌─────────────────────────┐   ┌──────┐ │ 
-│ Anna Calvi     │  │ Write your post here    │   │ Post │ │ 
-│ Freja Erichsen │  └─────────────────────────┘   └──────┘ │ 
-│ Kat Dennings   │                                         │ 
-│ Tom Waits      │  Anna Calvi:                            │ 
-│ Nick Cave      │  There was a point when it all really   │ 
-│                │  took off and got quite overwhelming.   │ 
-│                │                                         │ 
-│                │  Nick Cave:                             │ 
-│                │  But they haven't put their mittens on  │ 
-│                │  And there's fifteen feet of pure white │ 
-│                                                          │ 
-└──────────────────────────────────────────────────────────┘
+┌───────────────────────────────────────────────────────────────┐ 
+│  feed | profile | settings                          [Search]  │ 
+├───────────────────────────────────────────────────────────────┤
+│ Feed                                                          │ 
+│                                                               │ 
+│ Friends:       │  ┌──────────────────────────────┐   ┌──────┐ │ 
+│ Anna Calvi     │  │ Write your post here         │   │ Post │ │ 
+│ Freja Erichsen │  └──────────────────────────────┘   └──────┘ │ 
+│ Kat Dennings   │                                              │ 
+│ Tom Waits      │  Anna Calvi:                                 │ 
+│ Nick Cave      │  There was a point when it all really took   │ 
+│                │  off and got quite overwhelming.             │ 
+│                │                                              │ 
+│                │  Nick Cave:                                  │ 
+│                │  But they haven't put their mittens on, and  │ 
+│                │  there's fifteen feet of pure white snow.    │ 
+│                                                               │ 
+└───────────────────────────────────────────────────────────────┘
+       Slika 3: Početna stranice nakon prijave na društvenu mrežu
 ```
+Posljednji ekran jest ekran profila: lijeva kolumna prikazuje detalje profila poput e-mail adrese, telefona i pojedinih regija koje mogu biti javne ili dostupne samo prijateljima. Web aplikacija ovisno o zahtjevatelju stranice određuje koje su regije i statusi dostupni. Desna kolumna prikazuje sve statuse navedenog korisnika, prikazane kronološki od najnovijeg prema najstarijem. Ukoliko se posjetitelj nalazi na vrhu stranice, novi sadržaj biti će prikazan u trenutku njegovog stvaranja, dok listanjem statusa prema dolje oni se nastavljaju ‘u beskonačnost’, odnosno do prvog statusa korisnika.
+
+```
+┌───────────────────────────────────────────────────────────────┐ 
+│  feed | profile | settings                          [Search]  │ 
+├───────────────────────────────────────────────────────────────┤
+│ Feed                                                          │ 
+│                                                               │ 
+│ Friends:       │  ┌──────────────────────────────┐   ┌──────┐ │ 
+│ Anna Calvi     │  │ Write your post here         │   │ Post │ │ 
+│ Freja Erichsen │  └──────────────────────────────┘   └──────┘ │ 
+│ Kat Dennings   │                                              │ 
+│ Tom Waits      │  Anna Calvi:                                 │ 
+│ Nick Cave      │  There was a point when it all really took   │ 
+│                │  off and got quite overwhelming.             │ 
+│                │                                              │ 
+│                │  Nick Cave:                                  │ 
+│                │  But they haven't put their mittens on, and  │ 
+│                │  there's fifteen feet of pure white snow.    │ 
+│                                                               │ 
+└───────────────────────────────────────────────────────────────┘
+       Slika 3: Početna stranice nakon prijave na društvenu mrežu
+```
+
+Posljednji ekran jest ekran profila: lijeva kolumna prikazuje detalje profila poput adrese elektroničke pošte, telefona i pojedinih regija koje mogu biti javne ili dostupne samo prijateljima. *Web* aplikacija ovisno o zahtjevatelju stranice određuje koje su regije i statusi dostupni. Desna kolumna prikazuje sve statuse navedenog korisnika, prikazane kronološki od najnovijeg prema najstarijem. Ukoliko se posjetitelj nalazi na vrhu stranice, novi sadržaj biti će prikazan u trenutku njegovog stvaranja, dok listanjem statusa prema dolje oni se nastavljaju "u beskonačnost", odnosno do prvog statusa korisnika.
+
+```
+┌───────────────────────────────────────────────────────────────┐ 
+│  feed | profile | settings                          [Search]  │ 
+├───────────────────────────────────────────────────────────────┤
+│ Kate Moss                                                     │ 
+│ [Add Friend]                                                  │ 
+│                │                                              │ 
+│ kate@moss.io   │  There was a point when it all really took   │ 
+│ +1234567890    │  off and got quite overwhelming, even though │ 
+│                │  I didn't realize it.                        │ 
+│ Music:         │                                              │ 
+│ Pink Floyd     │  Now I can walk into a room full of people   │
+│ Led Zeppelin   │  I don't know and do my job. That's quite    │ 
+│                │  a massive thing to learn, I think.          │ 
+│ Film:          │                                              │ 
+│ La Dolce Vita  │  But they haven't put their mittens on, and  │ 
+│ Bullit         │  there's fifteen feet of pure white snow.    │ 
+│                                                               │ 
+└───────────────────────────────────────────────────────────────┘
+               Slika 4: Ekran korisničkog profila društvene mreže
+```
+
+### 6.3. Izrada aplikacije ###
+
+Nakon definiranja funkcionalnih korisničkih zahtjeva i modeliranja podataka i procesa, slijedi izrada aplikacije, započevši sa novim ASP.NET MVC4 projektom, instalacijom NuGet paketa i konfiguriranjem TFS sustava za upravljanje revizijama. Sljedeći je korak izrada podatkovnog sloja, odnosno definicija entiteta koristeći Entity Framework *code first* pristup i generiranje baze podataka i repozitorija za upravljanje podacima.
+
+Korištenjem *Dependency Injection* tehnike, repozitoriji se vezuju za kontrolere namijenjenje isporučivanju tradicionalnih sinkronih sadržaja (glavne stranice, navigacije, statičkog sadržaja), REST servisa kojima će se asinhrono dohvaćati korisnički statusi i sličan sadržaj, te SignalR WebSockets kontrolera namijenjenih implementaciji *real-time web* funkcionalnosti. Klijentska strana bazira se na HTML5 markupu, LESS stilskim značajkama te HTML5 Geolication API-ju. Posljednji je korak dostava aplikacije na Azure *cloud* uslugu koja omogućuje replikaciju i skaliranje web aplikacije i pripadajuće odnosno pripadajućih baza podataka.
+
+#### 6.3.1. Kontrola verzija i upravljanje paketima ####
+
+Obavezni preduvjet izrade bilo koje moderne aplikacije jest uvođenje sustava kontrole verzija (en. *version control system*). Sustavi kontrole verzija mogu se podijeliti prema kriteriju modela repozitorija podataka na centralizirane (klijent-poslužitelj) i distribuirane (decentralizirane) sustave. Sustavi sa centralnim repozitorijem pohranjuju cjelokupnu povijest projekta na jednoj lokaciji, te na pojedine korisničke zahtjeve (en. *checkout*) dostavljaju samo tražene verzije datoteka. Jedna od prednosti takvog pristupa jest velika brzina dostave pojedinih zahtjeva, budući da se dostavlja samo najmanji skup izmjena. U nedostatke takvog pristupa možemo ubrojati povećani rizik od gubitka podataka (jedinstvena točka ispada) i obaveznu komunikaciju sa centralnim repozitorijem prilikom pretraživanja povijesti. U popularne centralizirane sustave kontrole verzija ubrajaju se Subversion (SVN) i Team Foundation Server.
+
+Distribuirani sustavi, kao što su Git i Mercurial osiguravaju preuzimanje cjelokupnog repozitorija sa prvim korisničkim zahtjevom, te preuzimanja novih segmenata repozitorija sa svakim sljedećim zahtjevom. Takav pristup čini sustav mnogo otpornijim na gubitke podataka, međutim može postati problematičan ukoliko se radi o velikim repozitorijima (reda veličine GB) zbog brzina prijenosa i memorijskih kapaciteta na pojedinim klijentima.
+Za ovaj projekt odabran je Team Foundation Server, odnosno Microsoft Team Foundation Service usluga koja uključuje Team Foundation Server. Team Foundation Server izabran je iz tehnoloških i praktičnih razloga, odnosno nativne integracije sa Visual Studio razvojnom okolinom i mogućnostima praćenja zadataka (en. *tasks*) i prijave/rješavanja *bugova*.
+
+Microsoft Team Foundation Service pruža cjelokupno rješenje za vođenje projekta i pridruženih  repozitorija putem *web* sučelja, te korištenje istih u Visual Studio razvojnoj okolini. Usluga pruža i potpunu podršku za upravljanje projektom:
+
+ - praćenje napretka prema Scrum, Agile ili CMMI metodologiji vođenja projekta i planiranje kapaciteta
+ - unošenje i praćenje zadaća i prijavljenih bugova sa detaljnim opisima, procjenama trajanja i dodjelama pojedinim developerima ili fazama projekta – sprintevima u slučaju Agile metodologije
+ - automatizirani build projekta i izvođenje unit testova nakon check-ina
+ - automatizacija procedura dostave aplikacije i baze podataka na Windows Azure
+ - pretplata na slanje notifikacija za određene događaje (check-in, greška u kompiliranju itd.)
+ - podrška za proces recenzije koda sa mogućnostima komentiranja pojedinih linija
+ - integracija sa Windows Live identitetima
+ - integracija sa Microsoft PowerPoint za storyboarding funkcionalnost
+
+
 
 
 http://github.github.com/github-flavored-markdown/sample_content.html

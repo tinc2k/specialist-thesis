@@ -10,7 +10,7 @@ While I don't think my thesis is exceptional in any way, I still want people to 
 The thesis and its presentation are written in Croatian as required by the Polytechnic of Rijeka's Statute, and the application is written and commented in English.
 
 
-##Content##
+## Content ##
 
 1. Introduction
 2. Web application architecture
@@ -59,9 +59,9 @@ Poslovni odjel
 
 Specijalistički diplomski stručni studij Informacijske tehnologije u poslovnim sustavima
 
-Student: Tin Crnković, *bacc. inf.*
+Student: Tin Crnković, bacc. inf.
 
-Mentor: *Mr. Sc.* Marin Kaluža, *v. pred.*
+Mentor: Mr. Sc. Marin Kaluža, v. pred.
 
 
 

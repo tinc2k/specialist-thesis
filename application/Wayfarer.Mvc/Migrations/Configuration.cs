@@ -32,7 +32,7 @@ namespace Wayfarer.Mvc.Migrations
 
             #region Create Administrator
             if (!WebSecurity.UserExists("tinc2k"))
-                WebSecurity.CreateUserAndAccount("tinc2k", "tinc2k", new { Email = "tin@0bit.co", Phone = "+385915773004", Disabled = false });
+                WebSecurity.CreateUserAndAccount("tinc2k", "tinc2k", new { Email = "tinc2k@gmail.com", Phone = "+14042833124", Disabled = false });
  
             if (!Roles.GetRolesForUser("tinc2k").Contains("Administrator"))
                 Roles.AddUsersToRoles(new[] {"tinc2k"}, new[] {"Administrator"});
@@ -62,7 +62,7 @@ namespace Wayfarer.Mvc.Migrations
 
             #region Create User Monroe
             if (!WebSecurity.UserExists("monroe"))
-                WebSecurity.CreateUserAndAccount("monroe", "monroe", new { Email = "monroe@monroe.org", Phone = "+2223333444", Disabled = false });
+                WebSecurity.CreateUserAndAccount("monroe", "monroe", new { Email = "monroe@monroe.org", Phone = "+17014784082", Disabled = false });
             user = context.UserProfiles.First(u => u.UserName == "monroe");
             context.UserProfileRegions.AddOrUpdate(
                 upr => new { upr.Name, upr.Value },
@@ -129,7 +129,7 @@ namespace Wayfarer.Mvc.Migrations
 
             #region Create User Elon Musk
             if (!WebSecurity.UserExists("elon"))
-                WebSecurity.CreateUserAndAccount("elon", "elon", new { Email = "elon@teslamotors.com", Phone = "+1112222333", Disabled = false });
+                WebSecurity.CreateUserAndAccount("elon", "elon", new { Email = "elon@teslamotors.com", Phone = "+19013548901", Disabled = false });
             user = context.UserProfiles.First(u => u.UserName == "elon");
             context.UserProfileRegions.AddOrUpdate(
                 upr => new { upr.Name, upr.Value },
@@ -177,7 +177,7 @@ namespace Wayfarer.Mvc.Migrations
                  {
                      Audience = Audience.Public, Author = user,
                      TimePosted = DateTime.UtcNow.AddDays(-4).AddHours(-4), TimeLastEdited = DateTime.UtcNow.AddDays(-4).AddHours(-4),
-                     Content = "Physics is a good framework for thinking. … Boil things down to their fundamental truths and reason up from there."
+                     Content = "Physics is a good framework for thinking. Â… Boil things down to their fundamental truths and reason up from there."
                  }
              );
             context.Statuses.AddOrUpdate(
@@ -209,7 +209,7 @@ namespace Wayfarer.Mvc.Migrations
                  {
                      Audience = Audience.Public, Author = user,
                      TimePosted = DateTime.UtcNow.AddDays(-8).AddHours(-8), TimeLastEdited = DateTime.UtcNow.AddDays(-8).AddHours(-8),
-                     Content = "It is remarkable how many things you can explode. I’m lucky I have all my fingers."
+                     Content = "It is remarkable how many things you can explode. I'm lucky I have all my fingers."
                  }
              );
             context.Statuses.AddOrUpdate(
@@ -217,14 +217,14 @@ namespace Wayfarer.Mvc.Migrations
                  {
                      Audience = Audience.Public, Author = user,
                      TimePosted = DateTime.UtcNow.AddDays(-9).AddHours(-9), TimeLastEdited = DateTime.UtcNow.AddDays(-9).AddHours(-9),
-                     Content = "You want to be extra rigorous about making the best possible thing you can. Find everything that’s wrong with it and fix it. Seek negative feedback, particularly from friends"
+                     Content = "You want to be extra rigorous about making the best possible thing you can. Find everything thatÂ’s wrong with it and fix it. Seek negative feedback, particularly from friends"
                  }
              );
             #endregion
 
             #region Create User Charles Bukowski
             if (!WebSecurity.UserExists("bukowski"))
-                WebSecurity.CreateUserAndAccount("bukowski", "bukowski", new { Email = "bukowski@deadpoets.org", Phone = "+46728927813", Disabled = false });
+                WebSecurity.CreateUserAndAccount("bukowski", "bukowski", new { Email = "bukowski@deadpoets.org", Phone = "+13077665982", Disabled = false });
             user = context.UserProfiles.First(u => u.UserName == "bukowski");
             context.UserProfileRegions.AddOrUpdate(
                 upr => new { upr.Name, upr.Value },
@@ -248,7 +248,7 @@ namespace Wayfarer.Mvc.Migrations
                  {
                      Audience = Audience.Public, Author = user,
                      TimePosted = DateTime.UtcNow.AddDays(-2).AddHours(-2), TimeLastEdited = DateTime.UtcNow.AddDays(-2).AddHours(-2),
-                     Content = "Sometimes you climb out of bed in the morning and you think, I'm not going to make it, but you laugh inside — remembering all the times you've felt that way."
+                     Content = "Sometimes you climb out of bed in the morning and you think, I'm not going to make it, but you laugh inside Â— remembering all the times you've felt that way."
                  }
              );
             context.Statuses.AddOrUpdate(
@@ -311,7 +311,7 @@ namespace Wayfarer.Mvc.Migrations
 
             #region Create User Hunter Thompson
             if (!WebSecurity.UserExists("hunter"))
-                WebSecurity.CreateUserAndAccount("hunter", "hunter", new { Email = "hunter@deadpoets.org", Phone = "+943665432763", Disabled = false });
+                WebSecurity.CreateUserAndAccount("hunter", "hunter", new { Email = "hunter@deadpoets.org", Phone = "+19517434648", Disabled = false });
             user = context.UserProfiles.First(u => u.UserName == "hunter");
             context.UserProfileRegions.AddOrUpdate(
                 upr => new { upr.Name, upr.Value },
@@ -411,9 +411,9 @@ namespace Wayfarer.Mvc.Migrations
 
             #region Create New Dummy Users (tinc3k, tinc4k)
             if (!WebSecurity.UserExists("tinc3k"))
-                WebSecurity.CreateUserAndAccount("tinc3k", "tinc3k", new { Email = "tinc3k@0bit.co", Phone = "+4865411563", Disabled = false });
+                WebSecurity.CreateUserAndAccount("tinc3k", "tinc3k", new { Email = "tinc3k@0bit.co", Phone = "+15167530451", Disabled = false });
             if (!WebSecurity.UserExists("tinc4k"))
-                WebSecurity.CreateUserAndAccount("tinc4k", "tinc4k", new { Email = "tinc4k@0bit.co", Phone = "+1824186486", Disabled = false });
+                WebSecurity.CreateUserAndAccount("tinc4k", "tinc4k", new { Email = "tinc4k@0bit.co", Phone = "+19032581613", Disabled = false });
             #endregion
 
         }
